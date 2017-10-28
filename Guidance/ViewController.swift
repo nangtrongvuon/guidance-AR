@@ -11,7 +11,7 @@ import SceneKit
 import ARKit
 
 class ViewController: UIViewController, ARSCNViewDelegate {
-
+    
     @IBOutlet var sceneView: ARSCNView!
     
     override func viewDidLoad() {
@@ -22,9 +22,10 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Show statistics such as fps and timing information
         sceneView.showsStatistics = true
+//        sceneView.debugOptions = [.showBoundingBoxes]
         
         // Create a new scene
-        let scene = SCNScene(named: "art.scnassets/ship.scn")!
+        let scene = SCNScene()
         
         // Set the scene to the view
         sceneView.scene = scene
@@ -35,7 +36,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Create a session configuration
         let configuration = ARWorldTrackingConfiguration()
-
+        
         // Run the view's session
         sceneView.session.run(configuration)
     }
@@ -51,17 +52,110 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         super.didReceiveMemoryWarning()
         // Release any cached data, images, etc that aren't in use.
     }
-
+    
     // MARK: - ARSCNViewDelegate
     
-/*
+    
     // Override to create and configure nodes for anchors added to the view's session.
-    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-        let node = SCNNode()
-     
-        return node
+    //    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
+    //        let node = SCNNode()
+    //
+    //        node.geometry = SCNSphere(radius: 0.005)
+    //
+    //
+    //        return node
+    //    }
+    
+    func placeMessage(at point: SCNVector3) -> SCNNode {
+        
+        let placedNode = SCNNode()
+        
+        let message = SCNText(string: "Ôm cái gối ôm", extrusionDepth: 0)
+        message.containerFrame = CGRect(origin: .zero, size: CGSize(width: 100.0, height: 500.0))
+        message.isWrapped = true
+        
+        message.font = UIFont(name: "San Francisco", size: 16)
+        message.flatness = 1
+        let messageNode = SCNNode(geometry: message)
+        
+        center(node: messageNode)
+        
+        let (minVec, maxVec) = messageNode.boundingBox
+        
+        let borderWidth = CGFloat(maxVec.x - minVec.x) + 10
+        let borderHeight = CGFloat(maxVec.y - minVec.y) + 10
+        
+        let backgroundBox = SCNPlane(width: borderWidth, height: borderHeight)
+        backgroundBox.cornerRadius = borderWidth / 10
+        backgroundBox.firstMaterial!.diffuse.contents = UIColor.blue.withAlphaComponent(1)
+        backgroundBox.firstMaterial!.isDoubleSided = true
+        let boxNode = SCNNode(geometry: backgroundBox)
+        
+        // Make text face camera.
+        guard let sceneViewOrientation = sceneView.pointOfView?.orientation else { return SCNNode() }
+        
+        placedNode.orientation = sceneViewOrientation
+        
+        placedNode.addChildNode(boxNode)
+        placedNode.addChildNode(messageNode)
+        
+        
+        
+        placedNode.position = point
+        placedNode.scale = SCNVector3(0.005, 0.005, 0.005)
+        
+        messageNode.position.z += 0.02
+        
+        return placedNode
     }
-*/
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let sceneView = self.view as? ARSCNView else {
+            return
+        }
+        
+        guard let currentFrame = sceneView.session.currentFrame else { return }
+        guard let touchLocation = touches.first?.location(in: sceneView) else { return }
+        guard let cameraPosition = getCameraPosition(in: sceneView) else { return }
+        
+        let worldPosition = cameraPosition + getDirection(for: touchLocation, in: sceneView)
+        
+        sceneView.scene.rootNode.addChildNode(placeMessage(at: worldPosition))
+        
+    }
+    
+    // We use this to determine the location of a tap. In the 3D world, we would like this to refer to a direction.
+    func getDirection(for point: CGPoint, in view: SCNView) -> SCNVector3 {
+        let farPoint = view.unprojectPoint(SCNVector3(Float(point.x), Float(point.y), 1))
+        let nearPoint = view.unprojectPoint(SCNVector3(Float(point.x), Float(point.y), 0))
+        
+        let direction = (farPoint - nearPoint).normalized()
+        
+        //        direction.z *= 2
+        
+        return direction
+    }
+    
+    func getCameraPosition(in view: ARSCNView) -> SCNVector3? {
+        guard let lastFrame = view.session.currentFrame else {
+            return nil
+        }
+        
+        let position = lastFrame.camera.transform * float4(x: 0, y:  0, z: 0, w: 1)
+        let camera: SCNVector3 = SCNVector3(position.x, position.y, position.z)
+        
+        return camera
+    }
+    
+    func center(node: SCNNode) {
+        let (min, max) = node.boundingBox
+        
+        let dx = min.x + 0.5 * (max.x - min.x)
+        let dy = min.y + 0.5 * (max.y - min.y)
+        let dz = min.z + 0.5 * (max.z - min.z)
+        node.pivot = SCNMatrix4MakeTranslation(dx, dy, dz)
+    }
+    
     
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user

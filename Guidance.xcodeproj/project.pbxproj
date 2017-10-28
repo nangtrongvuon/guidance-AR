@@ -13,6 +13,7 @@
 		E1FE72F51FA4442100A61E74 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E1FE72F31FA4442100A61E74 /* Main.storyboard */; };
 		E1FE72F71FA4442100A61E74 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E1FE72F61FA4442100A61E74 /* Assets.xcassets */; };
 		E1FE72FA1FA4442100A61E74 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E1FE72F81FA4442100A61E74 /* LaunchScreen.storyboard */; };
+		E1FE73041FA44D0000A61E74 /* SCNVector3Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FE73031FA44D0000A61E74 /* SCNVector3Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		E1FE72F61FA4442100A61E74 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E1FE72F91FA4442100A61E74 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E1FE72FB1FA4442100A61E74 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E1FE73031FA44D0000A61E74 /* SCNVector3Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNVector3Extensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 				E1FE72ED1FA4442100A61E74 /* AppDelegate.swift */,
 				E1FE72EF1FA4442100A61E74 /* art.scnassets */,
 				E1FE72F11FA4442100A61E74 /* ViewController.swift */,
+				E1FE73031FA44D0000A61E74 /* SCNVector3Extensions.swift */,
 				E1FE72F31FA4442100A61E74 /* Main.storyboard */,
 				E1FE72F61FA4442100A61E74 /* Assets.xcassets */,
 				E1FE72F81FA4442100A61E74 /* LaunchScreen.storyboard */,
@@ -140,6 +143,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1FE73041FA44D0000A61E74 /* SCNVector3Extensions.swift in Sources */,
 				E1FE72F21FA4442100A61E74 /* ViewController.swift in Sources */,
 				E1FE72EE1FA4442100A61E74 /* AppDelegate.swift in Sources */,
 			);
