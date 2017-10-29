@@ -10,9 +10,14 @@ import UIKit
 import SceneKit
 import ARKit
 
-class ViewController: UIViewController, ARSCNViewDelegate {
+class MainViewController: UIViewController, ARSCNViewDelegate {
     
+    var isAddingMessage: Bool = false
+    var currentMessage: String = ""
+    
+    // MARK: UI Elements
     @IBOutlet var sceneView: ARSCNView!
+    @IBOutlet weak var addModeButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,6 +34,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Set the scene to the view
         sceneView.scene = scene
+        
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -66,11 +73,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     //        return node
     //    }
     
-    func placeMessage(at point: SCNVector3) -> SCNNode {
+    func placeMessage(at point: SCNVector3, withMessage message: String) -> SCNNode {
         
         let placedNode = SCNNode()
         
-        let message = SCNText(string: "Ôm cái gối ôm", extrusionDepth: 0)
+        let message = SCNText(string: message, extrusionDepth: 0)
         message.containerFrame = CGRect(origin: .zero, size: CGSize(width: 100.0, height: 500.0))
         message.isWrapped = true
         
@@ -99,8 +106,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         placedNode.addChildNode(boxNode)
         placedNode.addChildNode(messageNode)
         
-        
-        
         placedNode.position = point
         placedNode.scale = SCNVector3(0.005, 0.005, 0.005)
         
@@ -110,17 +115,19 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let sceneView = self.view as? ARSCNView else {
+        guard let sceneView = self.sceneView, isAddingMessage else {
             return
         }
         
-        guard let currentFrame = sceneView.session.currentFrame else { return }
+//        guard let currentFrame = sceneView.session.currentFrame else { return }
         guard let touchLocation = touches.first?.location(in: sceneView) else { return }
         guard let cameraPosition = getCameraPosition(in: sceneView) else { return }
         
         let worldPosition = cameraPosition + getDirection(for: touchLocation, in: sceneView)
         
-        sceneView.scene.rootNode.addChildNode(placeMessage(at: worldPosition))
+        sceneView.scene.rootNode.addChildNode(placeMessage(at: worldPosition, withMessage: currentMessage))
+        
+        self.isAddingMessage = false
         
     }
     
@@ -171,4 +178,15 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Reset tracking and/or remove existing anchors if consistent tracking is required
         
     }
+    
+    
 }
+
+extension UIViewController {
+    class func instance() -> Self {
+        let storyboardName = String(describing: self)
+        let storyboard = UIStoryboard(name: storyboardName, bundle: nil)
+        return storyboard.initialViewController()
+    }
+}
+
