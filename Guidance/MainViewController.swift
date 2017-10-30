@@ -10,10 +10,12 @@ import UIKit
 import SceneKit
 import ARKit
 
-class MainViewController: UIViewController, ARSCNViewDelegate {
+class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewControllerDelegate {
     
     var isAddingMessage: Bool = false
     var currentMessage: String = ""
+    
+    var messageManager = MessageManager()
     
     // MARK: UI Elements
     @IBOutlet var sceneView: ARSCNView!
@@ -24,6 +26,8 @@ class MainViewController: UIViewController, ARSCNViewDelegate {
         
         // Set the view's delegate
         sceneView.delegate = self
+        
+        
         
         // Show statistics such as fps and timing information
         sceneView.showsStatistics = true
@@ -73,45 +77,51 @@ class MainViewController: UIViewController, ARSCNViewDelegate {
     //        return node
     //    }
     
-    func placeMessage(at point: SCNVector3, withMessage message: String) -> SCNNode {
-        
-        let placedNode = SCNNode()
-        
-        let message = SCNText(string: message, extrusionDepth: 0)
-        message.containerFrame = CGRect(origin: .zero, size: CGSize(width: 100.0, height: 500.0))
-        message.isWrapped = true
-        
-        message.font = UIFont(name: "San Francisco", size: 16)
-        message.flatness = 1
-        let messageNode = SCNNode(geometry: message)
-        
-        center(node: messageNode)
-        
-        let (minVec, maxVec) = messageNode.boundingBox
-        
-        let borderWidth = CGFloat(maxVec.x - minVec.x) + 10
-        let borderHeight = CGFloat(maxVec.y - minVec.y) + 10
-        
-        let backgroundBox = SCNPlane(width: borderWidth, height: borderHeight)
-        backgroundBox.cornerRadius = borderWidth / 10
-        backgroundBox.firstMaterial!.diffuse.contents = UIColor.blue.withAlphaComponent(1)
-        backgroundBox.firstMaterial!.isDoubleSided = true
-        let boxNode = SCNNode(geometry: backgroundBox)
-        
-        // Make text face camera.
-        guard let sceneViewOrientation = sceneView.pointOfView?.orientation else { return SCNNode() }
-        
-        placedNode.orientation = sceneViewOrientation
-        
-        placedNode.addChildNode(boxNode)
-        placedNode.addChildNode(messageNode)
-        
-        placedNode.position = point
-        placedNode.scale = SCNVector3(0.005, 0.005, 0.005)
-        
-        messageNode.position.z += 0.02
-        
-        return placedNode
+//    func placeMessage(at point: SCNVector3, withMessage message: String) -> SCNNode {
+//
+//        let placedNode = SCNNode()
+//
+//        let message = SCNText(string: message, extrusionDepth: 0)
+//        message.containerFrame = CGRect(origin: .zero, size: CGSize(width: 100.0, height: 500.0))
+//        message.isWrapped = true
+//
+//        message.font = UIFont(name: "San Francisco", size: 16)
+//        message.flatness = 1
+//        let messageNode = SCNNode(geometry: message)
+//
+//        center(node: messageNode)
+//
+//        let (minVec, maxVec) = messageNode.boundingBox
+//
+//        let borderWidth = CGFloat(maxVec.x - minVec.x) + 10
+//        let borderHeight = CGFloat(maxVec.y - minVec.y) + 10
+//
+//        let backgroundBox = SCNPlane(width: borderWidth, height: borderHeight)
+//        backgroundBox.cornerRadius = borderWidth / 10
+//        backgroundBox.firstMaterial!.diffuse.contents = UIColor.blue.withAlphaComponent(1)
+//        backgroundBox.firstMaterial!.isDoubleSided = true
+//        let boxNode = SCNNode(geometry: backgroundBox)
+//
+//        // Make text face camera.
+//        guard let sceneViewOrientation = sceneView.pointOfView?.orientation else { return SCNNode() }
+//
+//        placedNode.orientation = sceneViewOrientation
+//
+//        placedNode.addChildNode(boxNode)
+//        placedNode.addChildNode(messageNode)
+//
+//        placedNode.position = point
+//        placedNode.scale = SCNVector3(0.005, 0.005, 0.005)
+//
+//        messageNode.position.z += 0.02
+//
+//        return placedNode
+//    }
+    
+    func enteredMessage(message: String) {
+        currentMessage = message
+        print(currentMessage)
+        self.isAddingMessage = true
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -125,11 +135,20 @@ class MainViewController: UIViewController, ARSCNViewDelegate {
         
         let worldPosition = cameraPosition + getDirection(for: touchLocation, in: sceneView)
         
-        sceneView.scene.rootNode.addChildNode(placeMessage(at: worldPosition, withMessage: currentMessage))
+        let emptyNode = SCNNode()
+        emptyNode.position = worldPosition
+
+        let anchor = ARAnchor(transform: simd_float4x4(emptyNode.transform))
+        sceneView.session.add(anchor: anchor)
+        
+        let newMessage = messageManager.createMessage(atPoint: worldPosition, withContent: currentMessage, inView: sceneView)
+        
+        sceneView.scene.rootNode.addChildNode(newMessage)
         
         self.isAddingMessage = false
         
     }
+    
     
     // We use this to determine the location of a tap. In the 3D world, we would like this to refer to a direction.
     func getDirection(for point: CGPoint, in view: SCNView) -> SCNVector3 {

@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol AddMessageViewControllerDelegate: class {
+    func enteredMessage(message: String)
+}
+
 class AddMessageViewController: UIViewController, UITextViewDelegate {
 
     let maximumWordCount = 150
@@ -16,11 +20,11 @@ class AddMessageViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var cancelButton: UIBarButtonItem!
     @IBOutlet weak var doneButton: UIBarButtonItem!
     
+    weak var delegate: AddMessageViewControllerDelegate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-
         // Do any additional setup after loading the view.
         
         // Sets self to be delegate for text view.
@@ -30,9 +34,7 @@ class AddMessageViewController: UIViewController, UITextViewDelegate {
         doneButton.isEnabled = false
         
         guard let initialNavController = self.navigationController else { return }
-        
         initialNavController.setNavigationBarHidden(false, animated: true)
-        
         initialNavController.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.lightText]
         
         addMessageTextView.textContainerInset = UIEdgeInsets(top: 15, left: 15, bottom: 15, right: 15)
@@ -51,14 +53,14 @@ class AddMessageViewController: UIViewController, UITextViewDelegate {
     @IBAction func addNewMessage(_ sender: UIBarButtonItem) {
         if let message = addMessageTextView.text {
             
-            guard let initialNavController = self.navigationController else { return }
-           
-            initialNavController.setNavigationBarHidden(true, animated: true)
-            initialNavController.popViewController(animated: true)
-            let viewControllerInstance = initialNavController.topViewController as! MainViewController
-            viewControllerInstance.currentMessage = message
-            viewControllerInstance.isAddingMessage = true
+//            guard let initialNavController = self.navigationController else { return }
+
+            delegate?.enteredMessage(message: message)
             
+            self.dismiss(animated: true, completion: nil)
+//            let viewControllerInstance = initialNavController.topViewController as! MainViewController
+//            viewControllerInstance.currentMessage = message
+//            viewControllerInstance.isAddingMessage = true
         }
     }
     
@@ -66,7 +68,8 @@ class AddMessageViewController: UIViewController, UITextViewDelegate {
         guard let initialNavController = self.navigationController else { return }
         
         initialNavController.setNavigationBarHidden(true, animated: true)
-        initialNavController.popViewController(animated: true)
+        addMessageTextView.resignFirstResponder()
+        self.dismiss(animated: true, completion: nil)
     }
     
     override func didReceiveMemoryWarning() {

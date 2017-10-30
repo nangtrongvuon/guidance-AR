@@ -9,16 +9,31 @@
 import Foundation
 import SceneKit
 
-extension MainViewController {
+extension MainViewController: UIPopoverPresentationControllerDelegate {
     
     // Toggles between add and view mode
     @IBAction func addModeToggle(_ button: UIButton) {
-//        self.isAddingMessage = !self.isAddingMessage
+        //        self.isAddingMessage = !self.isAddingMessage
         
-//        print(isAddingMessage)
+        //        print(isAddingMessage)
         
         let addMessageView = AddMessageViewController.instance()
-        navigationController?.pushViewController(addMessageView, animated: true)
+        addMessageView.delegate = self
         
+        let nav = UINavigationController(rootViewController: addMessageView as UIViewController)
+        nav.modalPresentationStyle = .popover
+        if let popover = nav.popoverPresentationController {
+            popover.delegate = self
+            addMessageView.preferredContentSize = CGSize(width: self.view.frame.width, height: self.view.frame.height / 3)
+            popover.sourceView = addModeButton
+            popover.sourceRect = addModeButton.bounds
+            self.present(nav, animated: true, completion: nil)
+        }
     }
+    
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
+    }
+    
+    
 }

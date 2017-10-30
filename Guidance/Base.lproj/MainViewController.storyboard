@@ -23,7 +23,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </arscnView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ug5-p3-cVt">
-                                <rect key="frame" x="163" y="608" width="48" height="48"/>
+                                <rect key="frame" x="16" y="20" width="48" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="48" id="Dai-Uw-Fxw"/>
                                     <constraint firstAttribute="height" constant="48" id="OUu-5R-gAt"/>
@@ -36,8 +36,8 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="dZ2-ve-Nwt" firstAttribute="bottom" secondItem="ug5-p3-cVt" secondAttribute="bottom" constant="11" id="DXw-K5-evW"/>
-                            <constraint firstItem="ug5-p3-cVt" firstAttribute="centerX" secondItem="dZ2-ve-Nwt" secondAttribute="centerX" id="XND-5r-wk1"/>
+                            <constraint firstItem="ug5-p3-cVt" firstAttribute="top" secondItem="dZ2-ve-Nwt" secondAttribute="top" id="oZf-Tw-TJr"/>
+                            <constraint firstItem="ug5-p3-cVt" firstAttribute="leading" secondItem="dZ2-ve-Nwt" secondAttribute="leading" constant="16" id="rj9-Bt-ylZ"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="dZ2-ve-Nwt"/>
                     </view>
