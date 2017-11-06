@@ -27,8 +27,6 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
         // Set the view's delegate
         sceneView.delegate = self
         
-        
-        
         // Show statistics such as fps and timing information
         sceneView.showsStatistics = true
 //        sceneView.debugOptions = [.showBoundingBoxes]
@@ -65,58 +63,6 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
     }
     
     // MARK: - ARSCNViewDelegate
-    
-    
-    // Override to create and configure nodes for anchors added to the view's session.
-    //    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-    //        let node = SCNNode()
-    //
-    //        node.geometry = SCNSphere(radius: 0.005)
-    //
-    //
-    //        return node
-    //    }
-    
-//    func placeMessage(at point: SCNVector3, withMessage message: String) -> SCNNode {
-//
-//        let placedNode = SCNNode()
-//
-//        let message = SCNText(string: message, extrusionDepth: 0)
-//        message.containerFrame = CGRect(origin: .zero, size: CGSize(width: 100.0, height: 500.0))
-//        message.isWrapped = true
-//
-//        message.font = UIFont(name: "San Francisco", size: 16)
-//        message.flatness = 1
-//        let messageNode = SCNNode(geometry: message)
-//
-//        center(node: messageNode)
-//
-//        let (minVec, maxVec) = messageNode.boundingBox
-//
-//        let borderWidth = CGFloat(maxVec.x - minVec.x) + 10
-//        let borderHeight = CGFloat(maxVec.y - minVec.y) + 10
-//
-//        let backgroundBox = SCNPlane(width: borderWidth, height: borderHeight)
-//        backgroundBox.cornerRadius = borderWidth / 10
-//        backgroundBox.firstMaterial!.diffuse.contents = UIColor.blue.withAlphaComponent(1)
-//        backgroundBox.firstMaterial!.isDoubleSided = true
-//        let boxNode = SCNNode(geometry: backgroundBox)
-//
-//        // Make text face camera.
-//        guard let sceneViewOrientation = sceneView.pointOfView?.orientation else { return SCNNode() }
-//
-//        placedNode.orientation = sceneViewOrientation
-//
-//        placedNode.addChildNode(boxNode)
-//        placedNode.addChildNode(messageNode)
-//
-//        placedNode.position = point
-//        placedNode.scale = SCNVector3(0.005, 0.005, 0.005)
-//
-//        messageNode.position.z += 0.02
-//
-//        return placedNode
-//    }
     
     func enteredMessage(message: String) {
         currentMessage = message
@@ -197,7 +143,6 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
         // Reset tracking and/or remove existing anchors if consistent tracking is required
         
     }
-    
     
 }
 
