@@ -9,6 +9,7 @@
 import UIKit
 import SceneKit
 import ARKit
+import CoreLocation
 
 class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewControllerDelegate {
     
@@ -18,7 +19,7 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
     var messageManager = MessageManager()
     
     // MARK: UI Elements
-    @IBOutlet var sceneView: ARSCNView!
+    @IBOutlet var sceneView: SceneLocationView!
     @IBOutlet weak var addModeButton: UIButton!
     
     override func viewDidLoad() {
@@ -27,17 +28,17 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
         // Set the view's delegate
         sceneView.delegate = self
         
+//        sceneView = SceneLocationView()
+        sceneView.frame = view.bounds
+        
         // Show statistics such as fps and timing information
         sceneView.showsStatistics = true
-//        sceneView.debugOptions = [.showBoundingBoxes]
         
         // Create a new scene
         let scene = SCNScene()
         
         // Set the scene to the view
         sceneView.scene = scene
-        
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -48,6 +49,8 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
         
         // Run the view's session
         sceneView.session.run(configuration)
+        
+//        sceneView.addLocationNodeForCurrentPosition(locationNode: Message(messageContent: "the quick brown fox jumps over the lazy dog"))
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -143,7 +146,6 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
         // Reset tracking and/or remove existing anchors if consistent tracking is required
         
     }
-    
 }
 
 extension UIViewController {

@@ -20,12 +20,12 @@ class MessageManager {
     func createMessage(atPoint point: SCNVector3, withContent content: String, inView view: ARSCNView) -> Message {
         let newMessage = Message(messageContent: content, point: point)
         
-        guard let currentCameraOrientation = view.pointOfView?.orientation else { return Message() }
-        
-        newMessage.orientation = currentCameraOrientation
-        messages.append(newMessage)
-        lastPlacedMessage = newMessage
-        
+        if let currentCameraOrientation = view.pointOfView?.orientation {
+            newMessage.orientation = currentCameraOrientation
+            messages.append(newMessage)
+            lastPlacedMessage = newMessage
+            
+        }
         return newMessage
     }
 }
