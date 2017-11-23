@@ -10,46 +10,32 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Map View-->
+        <!--Map View Controller-->
         <scene sceneID="hcY-tl-ZAd">
             <objects>
-                <viewController id="ltY-tT-rIj" customClass="MapView" customModule="Guidance" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="ltY-tT-rIj" customClass="MapViewController" customModule="Guidance" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="xxN-bz-zeg">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4gR-vF-IJt">
-                                <rect key="frame" x="0.0" y="635" width="375" height="32"/>
-                                <color key="backgroundColor" red="0.0" green="0.093641497320862577" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="26"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="PJd-n5-gxR">
                                 <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="4gR-vF-IJt" firstAttribute="leading" secondItem="xxN-bz-zeg" secondAttribute="leading" id="48B-c8-a3a"/>
-                            <constraint firstItem="4gR-vF-IJt" firstAttribute="bottom" secondItem="9za-gO-j0v" secondAttribute="bottom" id="6Oo-tV-vs9"/>
                             <constraint firstItem="PJd-n5-gxR" firstAttribute="bottom" secondItem="9za-gO-j0v" secondAttribute="bottom" id="8me-Q3-rw8"/>
-                            <constraint firstItem="4gR-vF-IJt" firstAttribute="leading" secondItem="9za-gO-j0v" secondAttribute="leading" id="SGn-nG-fwF"/>
                             <constraint firstItem="PJd-n5-gxR" firstAttribute="top" secondItem="9za-gO-j0v" secondAttribute="top" id="T83-Kc-rnU"/>
                             <constraint firstItem="PJd-n5-gxR" firstAttribute="leading" secondItem="9za-gO-j0v" secondAttribute="leading" id="Td5-dl-5bK"/>
                             <constraint firstItem="9za-gO-j0v" firstAttribute="bottom" secondItem="PJd-n5-gxR" secondAttribute="bottom" id="WFG-4G-u12"/>
                             <constraint firstItem="9za-gO-j0v" firstAttribute="trailing" secondItem="PJd-n5-gxR" secondAttribute="trailing" id="ZGb-jo-zQA"/>
-                            <constraint firstItem="9za-gO-j0v" firstAttribute="bottom" secondItem="4gR-vF-IJt" secondAttribute="bottom" id="doi-eY-swV"/>
                             <constraint firstItem="PJd-n5-gxR" firstAttribute="bottom" secondItem="9za-gO-j0v" secondAttribute="bottom" id="ehd-pl-bMp"/>
                             <constraint firstItem="PJd-n5-gxR" firstAttribute="leading" secondItem="xxN-bz-zeg" secondAttribute="leading" id="l4o-hD-S6A"/>
                             <constraint firstItem="PJd-n5-gxR" firstAttribute="trailing" secondItem="9za-gO-j0v" secondAttribute="trailing" id="sv5-eh-Eul"/>
-                            <constraint firstItem="4gR-vF-IJt" firstAttribute="trailing" secondItem="9za-gO-j0v" secondAttribute="trailing" id="y5s-f0-uNV"/>
-                            <constraint firstAttribute="trailing" secondItem="4gR-vF-IJt" secondAttribute="trailing" id="zqt-sf-MMN"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="9za-gO-j0v"/>
                     </view>
                     <connections>
-                        <outlet property="label_latlon" destination="4gR-vF-IJt" id="Ytg-wK-ocn"/>
                         <outlet property="mapView" destination="PJd-n5-gxR" id="UXI-HQ-eGa"/>
                     </connections>
                 </viewController>

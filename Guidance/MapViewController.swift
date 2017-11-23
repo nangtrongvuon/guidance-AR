@@ -10,10 +10,11 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class MapView: UIViewController, CLLocationManagerDelegate {
+class MapViewController: UIViewController, CLLocationManagerDelegate{
     @IBOutlet weak var mapView: MKMapView!
-    @IBOutlet weak var label_latlon: UILabel!
     var locationManager: CLLocationManager!
+    var isMapViewCentered = false
+    let zoomSpan = MKCoordinateSpanMake(0.01, 0.01)
     /*
     // Only override draw() if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
@@ -27,22 +28,28 @@ class MapView: UIViewController, CLLocationManagerDelegate {
         locationManager = CLLocationManager()
         locationManager.delegate = self
         locationManager.requestAlwaysAuthorization()
-//        locationManager.requestLocation()
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.startUpdatingLocation()
-        self.view.bringSubview(toFront: label_latlon)
-
     }
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let newLocation = MKPointAnnotation()
         newLocation.coordinate = locations[0].coordinate
-
-        mapView.addAnnotation(newLocation)
-        mapView.centerCoordinate = newLocation.coordinate
-        label_latlon.text =  String(newLocation.coordinate.latitude) + " " + String(newLocation.coordinate.longitude)
-        
+        if (!isMapViewCentered){
+            mapView.centerCoordinate = newLocation.coordinate
+            let region = MKCoordinateRegion(center: newLocation.coordinate, span: zoomSpan)
+            mapView.setRegion(region, animated: true)
+            isMapViewCentered = true
+        }
+        print(String(newLocation.coordinate.latitude) + " " + String(newLocation.coordinate.longitude))
     }
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        label_latlon.text = "cannot update current location"
+        print("can not access location")
+        let alert = UIAlertController(
+            title: "Cannot access location",
+            message: "check your location settings",
+            preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Got it", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
-
 }
+

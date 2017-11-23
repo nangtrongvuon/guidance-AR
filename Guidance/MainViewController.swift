@@ -21,6 +21,7 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
     // MARK: UI Elements
     @IBOutlet var sceneView: SceneLocationView!
     @IBOutlet weak var addModeButton: UIButton!
+    @IBOutlet weak var showMapButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
