@@ -24,9 +24,16 @@ class MessageManager {
             newMessage.orientation = currentCameraOrientation
             messages.append(newMessage)
             lastPlacedMessage = newMessage
-            
         }
         return newMessage
+    }
+
+    func deleteMessage(messageToDelete: Message) {
+        guard let deleteIndex = messages.index(of: messageToDelete) else { return }
+
+        messages.remove(at: deleteIndex)
+
+        messageToDelete.removeFromParentNode()
     }
 }
 

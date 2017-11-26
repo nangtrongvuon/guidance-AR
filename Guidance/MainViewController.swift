@@ -72,15 +72,33 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
         print(currentMessage)
         self.isAddingMessage = true
     }
+
+    func message(at point: CGPoint) -> Message? {
+        let hitTestResults = sceneView.hitTest(point)
+
+        if let nodeHit = hitTestResults.first?.node {
+            let foundMessage = nodeHit.parent as? Message
+            return foundMessage
+        } else {
+            return nil
+        }
+    }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let sceneView = self.sceneView, isAddingMessage else {
+        guard let sceneView = self.sceneView else {
             return
         }
         
 //        guard let currentFrame = sceneView.session.currentFrame else { return }
         guard let touchLocation = touches.first?.location(in: sceneView) else { return }
-        guard let cameraPosition = getCameraPosition(in: sceneView) else { return }
+
+        if !isAddingMessage {
+            if let foundMessage = message(at: touchLocation) {
+                messageManager.deleteMessage(messageToDelete: foundMessage)
+            }
+        }
+
+        guard let cameraPosition = getCameraPosition(in: sceneView), isAddingMessage else { return }
         
         let worldPosition = cameraPosition + getDirection(for: touchLocation, in: sceneView)
         
