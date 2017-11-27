@@ -15,7 +15,7 @@ class Message: LocationNode {
     
     var messageContent: String?
     var messageScore = 0
-    var frontsideBox = SCNPlane()
+    var messageFront = SCNPlane()
     
     init(messageContent: String, point: SCNVector3) {
         super.init(location: LocationManager().currentLocation)
@@ -77,17 +77,17 @@ class Message: LocationNode {
 
             let textImage = self.generateImageFromView(inputView: messageView)
 
-            self.frontsideBox = SCNPlane(width: textImage.size.width / 100, height: textImage.size.height / 100)
-            self.frontsideBox.firstMaterial!.diffuse.contents = textImage
-            self.frontsideBox.cornerRadius = 0.1
+            self.messageFront = SCNPlane(width: textImage.size.width / 100, height: textImage.size.height / 100)
+            self.messageFront.firstMaterial!.diffuse.contents = textImage
+            self.messageFront.cornerRadius = 0.1
 
-            let backsideBackgroundBox = SCNPlane(width: textImage.size.width / 100, height: textImage.size.height / 100)
-            backsideBackgroundBox.firstMaterial!.diffuse.contents = backside
-            backsideBackgroundBox.firstMaterial!.isDoubleSided = true
-            backsideBackgroundBox.cornerRadius = 0.1
+            let messageBack = SCNPlane(width: textImage.size.width / 100, height: textImage.size.height / 100)
+            messageBack.firstMaterial!.diffuse.contents = backside
+            messageBack.firstMaterial!.isDoubleSided = true
+            messageBack.cornerRadius = 0.1
 
-            let boxNode = SCNNode(geometry: self.frontsideBox)
-            let backsideNode = SCNNode(geometry: backsideBackgroundBox)
+            let boxNode = SCNNode(geometry: self.messageFront)
+            let backsideNode = SCNNode(geometry: messageBack)
 
             self.addChildNode(boxNode)
             self.addChildNode(backsideNode)
@@ -128,16 +128,16 @@ class Message: LocationNode {
 
             let textImage = self.generateImageFromView(inputView: messageView)
 
-            self.frontsideBox = SCNPlane(width: textImage.size.width / 100, height: textImage.size.height / 100)
-            self.frontsideBox.firstMaterial!.diffuse.contents = textImage
-            self.frontsideBox.cornerRadius = 0.1
+            self.messageFront = SCNPlane(width: textImage.size.width / 100, height: textImage.size.height / 100)
+            self.messageFront.firstMaterial!.diffuse.contents = textImage
+            self.messageFront.cornerRadius = 0.1
 
             let backsideBackgroundBox = SCNPlane(width: textImage.size.width / 100, height: textImage.size.height / 100)
             backsideBackgroundBox.firstMaterial!.diffuse.contents = backside
             backsideBackgroundBox.firstMaterial!.isDoubleSided = true
             backsideBackgroundBox.cornerRadius = 0.1
 
-            let boxNode = SCNNode(geometry: self.frontsideBox)
+            let boxNode = SCNNode(geometry: self.messageFront)
             let backsideNode = SCNNode(geometry: backsideBackgroundBox)
 
             self.addChildNode(boxNode)
@@ -185,7 +185,7 @@ class Message: LocationNode {
 
             let textImage = self.generateImageFromView(inputView: messageView)
 
-            self.frontsideBox.firstMaterial!.diffuse.contents = textImage
+            self.messageFront.firstMaterial!.diffuse.contents = textImage
         }
     }
 }
