@@ -15,7 +15,7 @@ class Message: LocationNode {
     
     var messageContent: String?
     var messageScore = 0
-    var frontsideBox: SCNPlane
+    var frontsideBox = SCNPlane()
     
     init(messageContent: String, point: SCNVector3) {
         super.init(location: LocationManager().currentLocation)
