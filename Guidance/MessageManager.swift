@@ -33,6 +33,9 @@ class MessageManager {
 
         messages.remove(at: deleteIndex)
 
+        
+        SCNTransaction.animationDuration = 1.0
+        messageToDelete.opacity = 0
         messageToDelete.removeFromParentNode()
     }
 }
