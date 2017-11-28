@@ -47,36 +47,37 @@ class Message: LocationNode {
         //        let messageNode = SCNNode(geometry: message)
         //        center(node: messageNode)
         //
-        DispatchQueue.global(qos: .userInitiated).async {
-            let messageView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
-            let messageLabel = EdgeInsetLabel(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
 
-            messageView.backgroundColor = UIColor.blue.withAlphaComponent(0.75)
+        let messageView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
+        let messageLabel = EdgeInsetLabel(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
 
-            messageLabel.textInsets = UIEdgeInsetsMake(10, 20, 10, 20)
+        messageView.backgroundColor = UIColor.blue.withAlphaComponent(0.75)
 
-            messageLabel.numberOfLines = 0
-            messageLabel.text = message
-            messageLabel.text!.append("\n Score: \(self.messageScore)")
-            messageLabel.textAlignment = .center
+        messageLabel.textInsets = UIEdgeInsetsMake(10, 20, 10, 20)
 
-            let sizeToFit = CGSize(width: messageLabel.frame.size.width, height: CGFloat.greatestFiniteMagnitude)
-            let textSize = messageLabel.sizeThatFits(sizeToFit)
+        messageLabel.numberOfLines = 0
+        messageLabel.text = message
+        messageLabel.text!.append("\n Score: \(self.messageScore)")
+        messageLabel.textAlignment = .center
 
-            let messageViewOrigin = CGPoint(x: 10, y: (messageView.frame.size.height - textSize.height) / 2)
+        let sizeToFit = CGSize(width: messageLabel.frame.size.width, height: CGFloat.greatestFiniteMagnitude)
+        let textSize = messageLabel.sizeThatFits(sizeToFit)
 
-            messageView.frame = CGRect(origin: messageViewOrigin, size: CGSize(width: textSize.width, height: textSize.height))
+        let messageViewOrigin = CGPoint(x: 10, y: (messageView.frame.size.height - textSize.height) / 2)
 
-            let backside = self.generateImageFromView(inputView: messageView)
+        messageView.frame = CGRect(origin: messageViewOrigin, size: CGSize(width: textSize.width, height: textSize.height))
 
-            messageView.addSubview(messageLabel)
-            messageLabel.sizeToFit()
+        let backside = self.generateImageFromView(inputView: messageView)
 
-            messageLabel.textColor = UIColor.white
-            messageLabel.font = UIFont(name: "San Francisco", size: 16)
+        messageView.addSubview(messageLabel)
+        messageLabel.sizeToFit()
 
-            let textImage = self.generateImageFromView(inputView: messageView)
+        messageLabel.textColor = UIColor.white
+        messageLabel.font = UIFont(name: "San Francisco", size: 16)
 
+        let textImage = self.generateImageFromView(inputView: messageView)
+
+        DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
             self.messageFront = SCNPlane(width: textImage.size.width / 100, height: textImage.size.height / 100)
             self.messageFront.firstMaterial!.diffuse.contents = textImage
             self.messageFront.cornerRadius = 0.1
@@ -94,40 +95,42 @@ class Message: LocationNode {
 
             self.position = point
         }
+
+        self.messageContent = message
     }
     
     func loadMessage(message: String) {
-        DispatchQueue.global(qos: .userInitiated).async {
 
-            let messageView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
-            let messageLabel = EdgeInsetLabel(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
 
-            messageView.backgroundColor = UIColor.blue.withAlphaComponent(0.75)
+        let messageView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
+        let messageLabel = EdgeInsetLabel(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
 
-            messageLabel.textInsets = UIEdgeInsetsMake(10, 20, 10, 20)
+        messageView.backgroundColor = UIColor.blue.withAlphaComponent(0.75)
 
-            messageLabel.numberOfLines = 0
-            messageLabel.text = message
-            messageLabel.text!.append("\n Score: \(self.messageScore)")
-            messageLabel.textAlignment = .center
+        messageLabel.textInsets = UIEdgeInsetsMake(10, 20, 10, 20)
 
-            let sizeToFit = CGSize(width: messageLabel.frame.size.width, height: CGFloat.greatestFiniteMagnitude)
-            let textSize = messageLabel.sizeThatFits(sizeToFit)
+        messageLabel.numberOfLines = 0
+        messageLabel.text = message
+        messageLabel.text!.append("\n Score: \(self.messageScore)")
+        messageLabel.textAlignment = .center
 
-            let messageViewOrigin = CGPoint(x: 10, y: (messageView.frame.size.height - textSize.height) / 2)
+        let sizeToFit = CGSize(width: messageLabel.frame.size.width, height: CGFloat.greatestFiniteMagnitude)
+        let textSize = messageLabel.sizeThatFits(sizeToFit)
 
-            messageView.frame = CGRect(origin: messageViewOrigin, size: CGSize(width: textSize.width, height: textSize.height))
+        let messageViewOrigin = CGPoint(x: 10, y: (messageView.frame.size.height - textSize.height) / 2)
 
-            let backside = self.generateImageFromView(inputView: messageView)
+        messageView.frame = CGRect(origin: messageViewOrigin, size: CGSize(width: textSize.width, height: textSize.height))
 
-            messageView.addSubview(messageLabel)
-            messageLabel.sizeToFit()
+        let backside = self.generateImageFromView(inputView: messageView)
 
-            messageLabel.textColor = UIColor.white
-            messageLabel.font = UIFont(name: "San Francisco", size: 16)
+        messageView.addSubview(messageLabel)
+        messageLabel.sizeToFit()
 
-            let textImage = self.generateImageFromView(inputView: messageView)
+        messageLabel.textColor = UIColor.white
+        messageLabel.font = UIFont(name: "San Francisco", size: 16)
 
+        let textImage = self.generateImageFromView(inputView: messageView)
+        DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
             self.messageFront = SCNPlane(width: textImage.size.width / 100, height: textImage.size.height / 100)
             self.messageFront.firstMaterial!.diffuse.contents = textImage
             self.messageFront.cornerRadius = 0.1
@@ -144,6 +147,8 @@ class Message: LocationNode {
             self.addChildNode(backsideNode)
 
         }
+
+        self.messageContent = message
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -168,25 +173,25 @@ class Message: LocationNode {
         return uiImage
     }
 
-    func updateScore() {
+    func increaseScore() {
         self.messageScore += 1
-        DispatchQueue.global(qos: .userInitiated).async {
-            let messageView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
-            let messageLabel = EdgeInsetLabel(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
 
-            messageView.backgroundColor = UIColor.blue.withAlphaComponent(0.75)
+        let messageView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
+        let messageLabel = EdgeInsetLabel(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
 
-            messageLabel.textInsets = UIEdgeInsetsMake(10, 20, 10, 20)
+        messageView.backgroundColor = UIColor.blue.withAlphaComponent(0.75)
 
-            messageLabel.numberOfLines = 0
-            messageLabel.text = self.messageContent
-            messageLabel.text!.append("\n Score: \(self.messageScore)")
-            messageLabel.textAlignment = .center
+        messageLabel.textInsets = UIEdgeInsetsMake(10, 20, 10, 20)
 
-            let textImage = self.generateImageFromView(inputView: messageView)
+        messageLabel.numberOfLines = 0
+        messageLabel.text = self.messageContent
+        messageLabel.text!.append("\n Score: \(self.messageScore)")
+        messageLabel.textAlignment = .center
 
-            self.messageFront.firstMaterial!.diffuse.contents = textImage
-        }
+        let textImage = self.generateImageFromView(inputView: messageView)
+
+        self.messageFront.firstMaterial!.diffuse.contents = textImage
+
     }
 }
 

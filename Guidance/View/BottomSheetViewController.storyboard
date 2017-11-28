@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13770" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="GXC-P2-CdF">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13770"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Bottom Sheet View Controller-->
+        <scene sceneID="y12-6v-cLI">
+            <objects>
+                <viewController id="GXC-P2-CdF" customClass="BottomSheetViewController" customModule="Guidance" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="nDb-dt-haC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="225"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rl2-J5-kqS">
+                                <rect key="frame" x="8" y="165" width="177" height="40"/>
+                                <state key="normal" title="Rate Up"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lZK-F8-tez">
+                                <rect key="frame" x="190" y="165" width="177" height="40"/>
+                                <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="Rate Down">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="author label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CF7-0g-L8n">
+                                <rect key="frame" x="16" y="33.5" width="275" height="21"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="ykW-YC-bZY">
+                                <rect key="frame" x="16" y="62.5" width="361" height="94.5"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gq9-hA-zUh" userLabel="Cancel Button">
+                                <rect key="frame" x="311" y="12" width="48" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="48" id="8JR-e1-FeL"/>
+                                    <constraint firstAttribute="height" constant="48" id="9VF-ir-4dG"/>
+                                </constraints>
+                                <state key="normal" image="cancel"/>
+                                <connections>
+                                    <action selector="dismiss:" destination="GXC-P2-CdF" eventType="touchUpInside" id="oVn-h5-aDy"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Rl2-J5-kqS" firstAttribute="baseline" secondItem="lZK-F8-tez" secondAttribute="baseline" id="0WS-K8-NFH"/>
+                            <constraint firstItem="Rl2-J5-kqS" firstAttribute="top" secondItem="ykW-YC-bZY" secondAttribute="bottom" constant="8" symbolic="YES" id="5N1-5E-7H7"/>
+                            <constraint firstItem="ykW-YC-bZY" firstAttribute="top" secondItem="CF7-0g-L8n" secondAttribute="bottom" constant="8" symbolic="YES" id="8nh-QW-ig5"/>
+                            <constraint firstItem="gq9-hA-zUh" firstAttribute="leading" secondItem="cO9-Z6-fDY" secondAttribute="leading" constant="311" id="8ui-er-YaF"/>
+                            <constraint firstItem="ykW-YC-bZY" firstAttribute="trailing" secondItem="gq9-hA-zUh" secondAttribute="trailing" constant="18" id="9kO-jC-hhb"/>
+                            <constraint firstItem="Rl2-J5-kqS" firstAttribute="top" secondItem="cO9-Z6-fDY" secondAttribute="top" constant="165" id="CaU-d8-QLW"/>
+                            <constraint firstAttribute="bottom" secondItem="Rl2-J5-kqS" secondAttribute="bottom" constant="20" symbolic="YES" id="NTx-KE-kd4"/>
+                            <constraint firstItem="gq9-hA-zUh" firstAttribute="leading" secondItem="CF7-0g-L8n" secondAttribute="trailing" constant="20" id="QSM-rV-nVS"/>
+                            <constraint firstItem="lZK-F8-tez" firstAttribute="height" secondItem="Rl2-J5-kqS" secondAttribute="height" id="bCO-tV-8ZZ"/>
+                            <constraint firstItem="lZK-F8-tez" firstAttribute="leading" secondItem="Rl2-J5-kqS" secondAttribute="trailing" constant="5" id="cFv-GG-lGs"/>
+                            <constraint firstItem="CF7-0g-L8n" firstAttribute="centerY" secondItem="gq9-hA-zUh" secondAttribute="centerY" constant="8" id="fV2-8q-Riv"/>
+                            <constraint firstItem="gq9-hA-zUh" firstAttribute="top" secondItem="nDb-dt-haC" secondAttribute="top" constant="12" id="fqb-za-g3G"/>
+                            <constraint firstItem="CF7-0g-L8n" firstAttribute="leading" secondItem="ykW-YC-bZY" secondAttribute="leading" id="iUN-hH-Prh"/>
+                            <constraint firstItem="Rl2-J5-kqS" firstAttribute="leading" secondItem="cO9-Z6-fDY" secondAttribute="leading" constant="8" id="mUr-zO-Uyo"/>
+                            <constraint firstItem="lZK-F8-tez" firstAttribute="width" secondItem="Rl2-J5-kqS" secondAttribute="width" id="opB-sH-vEg"/>
+                            <constraint firstItem="cO9-Z6-fDY" firstAttribute="trailing" secondItem="lZK-F8-tez" secondAttribute="trailing" constant="8" id="qRZ-qn-fuZ"/>
+                            <constraint firstItem="CF7-0g-L8n" firstAttribute="leading" secondItem="nDb-dt-haC" secondAttribute="leadingMargin" id="w2q-oL-qV7"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="cO9-Z6-fDY"/>
+                    </view>
+                    <size key="freeformSize" width="375" height="225"/>
+                    <connections>
+                        <outlet property="authorLabel" destination="CF7-0g-L8n" id="cqF-e3-VwQ"/>
+                        <outlet property="bottomSheetView" destination="nDb-dt-haC" id="XCB-z3-I7h"/>
+                        <outlet property="messageContentView" destination="ykW-YC-bZY" id="Mly-kY-vQc"/>
+                        <outlet property="rateDownButton" destination="lZK-F8-tez" id="9T7-sc-txC"/>
+                        <outlet property="rateUpButton" destination="Rl2-J5-kqS" id="QET-SM-e0d"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ofm-lQ-Kma" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-229.59999999999999" y="-78.710644677661179"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="cancel" width="15" height="15"/>
+    </resources>
+</document>

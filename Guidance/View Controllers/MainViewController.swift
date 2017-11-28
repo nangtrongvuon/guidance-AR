@@ -11,12 +11,14 @@ import SceneKit
 import ARKit
 import CoreLocation
 
-class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewControllerDelegate {
+class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewControllerDelegate, BottomSheetViewControllerDelegate {
     
     var isAddingMessage: Bool = false
+    var isViewingDetail: Bool = false
     var currentMessage: String = ""
     
     var messageManager = MessageManager()
+    let bottomSheetInstance = BottomSheetViewController.instance()
     
     // MARK: UI Elements
     @IBOutlet var sceneView: SceneLocationView!
@@ -24,11 +26,14 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        dismissBottomSheet()
+
         // Set the view's delegate
         sceneView.delegate = self
+        bottomSheetInstance.delegate = self
         
-//        sceneView = SceneLocationView()
+        //        sceneView = SceneLocationView()
         sceneView.frame = view.bounds
         
         // Show statistics such as fps and timing information
@@ -43,14 +48,15 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        setupBottomSheet()
+
         // Create a session configuration
         let configuration = ARWorldTrackingConfiguration()
         
         // Run the view's session
         sceneView.session.run(configuration)
         
-//        sceneView.addLocationNodeForCurrentPosition(locationNode: Message(messageContent: "the quick brown fox jumps over the lazy dog"))
+        //        sceneView.addLocationNodeForCurrentPosition(locationNode: Message(messageContent: "the quick brown fox jumps over the lazy dog"))
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -64,8 +70,6 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
         super.didReceiveMemoryWarning()
         // Release any cached data, images, etc that aren't in use.
     }
-    
-    // MARK: - ARSCNViewDelegate
     
     func enteredMessage(message: String) {
         currentMessage = message
@@ -83,18 +87,51 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
             return nil
         }
     }
+
+    func showBottomSheet(withMessage message: Message) {
+        bottomSheetInstance.authorLabel.text = "Author: Me"
+        bottomSheetInstance.messageContentView.text = message.messageContent
+        if !isViewingDetail {
+            bottomSheetInstance.displayBottomSheet()
+        }
+
+    }
+
+    func dismissBottomSheet() {
+        self.isViewingDetail = false
+        print(self.isViewingDetail)
+    }
+
+    func setupBottomSheet() {
+
+        self.addChildViewController(bottomSheetInstance)
+        self.view.addSubview(bottomSheetInstance.view)
+        bottomSheetInstance.didMove(toParentViewController: self)
+
+        let height = view.frame.height
+        let width  = view.frame.width
+
+        bottomSheetInstance.view.frame = CGRect(x: 0, y: self.view.frame.maxY, width: width, height: height / 3)
+
+    }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let sceneView = self.sceneView else {
             return
         }
         
-//        guard let currentFrame = sceneView.session.currentFrame else { return }
+        //        guard let currentFrame = sceneView.session.currentFrame else { return }
         guard let touchLocation = touches.first?.location(in: sceneView) else { return }
 
         if !isAddingMessage {
             if let foundMessage = message(at: touchLocation) {
-                messageManager.deleteMessage(messageToDelete: foundMessage)
+                //                messageManager.deleteMessage(messageToDelete: foundMessage)
+                //                foundMessage.increaseScore()
+
+                showBottomSheet(withMessage: foundMessage)
+                self.isViewingDetail = true
+                print(isViewingDetail)
+
             }
         }
 
@@ -107,15 +144,12 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
 
         let anchor = ARAnchor(transform: simd_float4x4(emptyNode.transform))
         sceneView.session.add(anchor: anchor)
-        
         let newMessage = messageManager.createMessage(atPoint: worldPosition, withContent: currentMessage, inView: sceneView)
-        
         sceneView.scene.rootNode.addChildNode(newMessage)
         
         self.isAddingMessage = false
         
     }
-    
     
     // We use this to determine the location of a tap. In the 3D world, we would like this to refer to a direction.
     func getDirection(for point: CGPoint, in view: SCNView) -> SCNVector3 {
@@ -164,6 +198,12 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
         // Reset tracking and/or remove existing anchors if consistent tracking is required
         
     }
+
+    // needed for modal
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
+    }
+
 }
 
 extension UIViewController {
@@ -171,6 +211,12 @@ extension UIViewController {
         let storyboardName = String(describing: self)
         let storyboard = UIStoryboard(name: storyboardName, bundle: nil)
         return storyboard.initialViewController()
+    }
+}
+
+extension UIStoryboard {
+    func initialViewController<T: UIViewController>() -> T {
+        return self.instantiateInitialViewController() as! T
     }
 }
 
