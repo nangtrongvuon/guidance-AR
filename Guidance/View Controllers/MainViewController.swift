@@ -89,12 +89,12 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
     }
 
     func showBottomSheet(withMessage message: Message) {
-        bottomSheetInstance.authorLabel.text = "Author: Me"
-        bottomSheetInstance.messageContentView.text = message.messageContent
+        bottomSheetInstance.currentMessage = message
+        bottomSheetInstance.setupViewForMessage()
+
         if !isViewingDetail {
             bottomSheetInstance.displayBottomSheet()
         }
-
     }
 
     func dismissBottomSheet() {

@@ -23,6 +23,7 @@ class BottomSheetViewController: UIViewController {
     @IBOutlet weak var messageContentView: UITextView!
 
     weak var delegate: BottomSheetViewControllerDelegate?
+    var currentMessage: Message?
 
     let fullView: CGFloat = 100
 
@@ -50,6 +51,13 @@ class BottomSheetViewController: UIViewController {
         super.viewDidAppear(animated)
     }
 
+    func setupViewForMessage() {
+        if let message = currentMessage {
+            self.authorLabel.text = message.author
+            self.messageContentView.text = message.messageContent
+        }
+    }
+
     // For aethestics
 
     func roundViews() {
@@ -59,6 +67,7 @@ class BottomSheetViewController: UIViewController {
         messageContentView.layer.cornerRadius = 10
 
         rateUpButton.layer.borderColor = UIColor.init(displayP3Red: 0, green: 148/225, blue: 247.0/255, alpha: 1).cgColor
+        rateDownButton.layer.borderColor = UIColor.init(displayP3Red: 247.0/255, green: 0, blue: 0, alpha: 1).cgColor
 
         bottomSheetView.clipsToBounds = true
     }
@@ -80,7 +89,6 @@ class BottomSheetViewController: UIViewController {
             let frame = self.view.frame
             self.view.frame = CGRect(x: 0, y: self.partialView + frame.height, width: frame.width, height: frame.height)
         })
-
         print("calling dismiss bottom sheet")
         delegate?.dismissBottomSheet()
     }
@@ -99,8 +107,31 @@ class BottomSheetViewController: UIViewController {
         view.insertSubview(blurredView, at: 0)
     }
 
-    
-    
+    @IBAction func rateUpMessage(_ sender: Any) {
+
+        if let messageToRate = currentMessage {
+            messageToRate.modifyScore(ratingUp: true)
+            rateUpButton.isSelected = true
+            rateUpButton.backgroundColor = UIColor.blue
+
+            rateDownButton.isSelected = false
+            rateDownButton.backgroundColor = UIColor.clear
+        }
+
+
+    }
+
+    @IBAction func rateDownMessage(_ sender: Any) {
+        if let messageToRate = currentMessage {
+            messageToRate.modifyScore(ratingUp: false)
+            rateDownButton.isSelected = true
+            rateDownButton.backgroundColor = UIColor.red
+
+            rateUpButton.isSelected = false
+            rateUpButton.backgroundColor = UIColor.clear
+        }
+
+    }
 
     /*
     // MARK: - Navigation

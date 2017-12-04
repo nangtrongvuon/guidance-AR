@@ -12,7 +12,8 @@ import SceneKit
 import CoreLocation
 
 class Message: LocationNode {
-    
+
+    var author = UIDevice.current.name
     var messageContent: String?
     var messageScore = 0
     var messageFront = SCNPlane()
@@ -145,9 +146,7 @@ class Message: LocationNode {
 
             self.addChildNode(boxNode)
             self.addChildNode(backsideNode)
-
         }
-
         self.messageContent = message
     }
 
@@ -173,9 +172,16 @@ class Message: LocationNode {
         return uiImage
     }
 
-    func increaseScore() {
-        self.messageScore += 1
+    func modifyScore(ratingUp: Bool) {
+        // Modifies the message's score
+        if ratingUp {
+            self.messageScore += 1
+        } else {
+            self.messageScore -= 1
+        }
 
+
+        // Then refreshes the message's face to reflect the new score
         let messageView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
         let messageLabel = EdgeInsetLabel(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
 
