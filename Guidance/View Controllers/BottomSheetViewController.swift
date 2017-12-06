@@ -119,40 +119,54 @@ class BottomSheetViewController: UIViewController {
     @IBAction func rateUpMessage(_ sender: Any) {
 
         if let messageToRate = currentMessage {
-            messageToRate.modifyScore(ratingUp: true)
-            rateUpButton.isSelected = true
-            rateUpButton.backgroundColor = UIColor.blue
+            if rateUpButton.isSelected == false {
+                messageToRate.modifyScore(ratingUp: true)
+                rateUpButton.isSelected = true
+                rateUpButton.backgroundColor = UIColor.blue
 
-            rateDownButton.isSelected = false
-            rateDownButton.backgroundColor = UIColor.clear
+                rateDownButton.isSelected = false
+                rateDownButton.backgroundColor = UIColor.clear
 
-            setupViewForMessage()
+                setupViewForMessage()
+            } else {
+                messageToRate.modifyScore(ratingUp: false)
 
-            
+                rateUpButton.isSelected = false
+                rateUpButton.backgroundColor = UIColor.clear
+
+                setupViewForMessage()
+            }
         }
     }
 
     @IBAction func rateDownMessage(_ sender: Any) {
         if let messageToRate = currentMessage {
-            messageToRate.modifyScore(ratingUp: false)
-            rateDownButton.isSelected = true
-            rateDownButton.backgroundColor = UIColor.red
 
-            rateUpButton.isSelected = false
-            rateUpButton.backgroundColor = UIColor.clear
+            if rateDownButton.isSelected == false {
+                messageToRate.modifyScore(ratingUp: false)
+                rateDownButton.isSelected = true
+                rateDownButton.backgroundColor = UIColor.red
 
-            setupViewForMessage()
+                setupViewForMessage()
+            } else {
+                messageToRate.modifyScore(ratingUp: true)
+
+                rateDownButton.isSelected = false
+                rateDownButton.backgroundColor = UIColor.clear
+
+                setupViewForMessage()
+            }
         }
     }
 
     /*
-    // MARK: - Navigation
+     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destinationViewController.
+     // Pass the selected object to the new view controller.
+     }
+     */
 
 }
