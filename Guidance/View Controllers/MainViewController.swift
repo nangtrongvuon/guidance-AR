@@ -12,9 +12,9 @@ import ARKit
 import CoreLocation
 
 class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewControllerDelegate, BottomSheetViewControllerDelegate {
-    
+
     var isAddingMessage: Bool = false
-    var isViewingDetail: Bool = false
+    var showingBottomSheet: Bool = false
     var currentMessage: String = ""
     
     var messageManager = MessageManager()
@@ -92,14 +92,14 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
         bottomSheetInstance.currentMessage = message
         bottomSheetInstance.setupViewForMessage()
 
-        if !isViewingDetail {
+        if !showingBottomSheet {
             bottomSheetInstance.displayBottomSheet()
         }
     }
 
     func dismissBottomSheet() {
-        self.isViewingDetail = false
-        print(self.isViewingDetail)
+        bottomSheetInstance.closeBottomSheet()
+        self.showingBottomSheet = false
     }
 
     func setupBottomSheet() {
@@ -112,26 +112,27 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
         let width  = view.frame.width
 
         bottomSheetInstance.view.frame = CGRect(x: 0, y: self.view.frame.maxY, width: width, height: height / 3)
-
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let sceneView = self.sceneView else {
             return
         }
-        
         //        guard let currentFrame = sceneView.session.currentFrame else { return }
         guard let touchLocation = touches.first?.location(in: sceneView) else { return }
 
         if !isAddingMessage {
+            if showingBottomSheet {
+                bottomSheetInstance.closeBottomSheet()
+            }
+
             if let foundMessage = message(at: touchLocation) {
                 //                messageManager.deleteMessage(messageToDelete: foundMessage)
                 //                foundMessage.increaseScore()
 
                 showBottomSheet(withMessage: foundMessage)
-                self.isViewingDetail = true
-                print(isViewingDetail)
-
+                self.showingBottomSheet = true
+                print(showingBottomSheet)
             }
         }
 

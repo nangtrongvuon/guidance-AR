@@ -16,6 +16,15 @@ class Message: LocationNode {
     var author = UIDevice.current.name
     var messageContent: String?
     var messageScore = 0
+    var messageScoreString: String {
+        get {
+            if messageScore > 0 {
+                return "+\(messageScore)"
+            } else {
+                return "\(messageScore)"
+            }
+        }
+    }
     var messageFront = SCNPlane()
     
     init(messageContent: String, point: SCNVector3) {
@@ -102,7 +111,6 @@ class Message: LocationNode {
     
     func loadMessage(message: String) {
 
-
         let messageView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
         let messageLabel = EdgeInsetLabel(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
 
@@ -180,26 +188,26 @@ class Message: LocationNode {
             self.messageScore -= 1
         }
 
-
-        // Then refreshes the message's face to reflect the new score
-        let messageView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
-        let messageLabel = EdgeInsetLabel(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
-
-        messageView.backgroundColor = UIColor.blue.withAlphaComponent(0.75)
-
-        messageLabel.textInsets = UIEdgeInsetsMake(10, 20, 10, 20)
-
-        messageLabel.numberOfLines = 0
-        messageLabel.text = self.messageContent
-        messageLabel.text!.append("\n Score: \(self.messageScore)")
-        messageLabel.textAlignment = .center
-
-        let textImage = self.generateImageFromView(inputView: messageView)
-
-        self.messageFront.firstMaterial!.diffuse.contents = textImage
+//        // Then refreshes the message's face to reflect the new score
+//        let messageView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
+//        let messageLabel = EdgeInsetLabel(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
+//
+//        messageView.backgroundColor = UIColor.blue.withAlphaComponent(0.75)
+//        messageLabel.textInsets = UIEdgeInsetsMake(10, 20, 10, 20)
+//
+//        messageLabel.numberOfLines = 0
+//        messageLabel.text = self.messageContent
+//        messageLabel.text!.append("\n Score: \(self.messageScore)")
+//        messageLabel.textAlignment = .center
+//
+//        let textImage = self.generateImageFromView(inputView: messageView)
+//
+//        self.messageFront.firstMaterial!.diffuse.contents = textImage
 
     }
 }
+
+// Helper class to create margins for the UIView
 
 class EdgeInsetLabel: UILabel {
     var textInsets = UIEdgeInsets.zero {

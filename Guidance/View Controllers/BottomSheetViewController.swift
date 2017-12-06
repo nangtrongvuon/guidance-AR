@@ -21,6 +21,7 @@ class BottomSheetViewController: UIViewController {
     @IBOutlet weak var rateDownButton: UIButton!
     @IBOutlet weak var authorLabel: UILabel!
     @IBOutlet weak var messageContentView: UITextView!
+    @IBOutlet weak var scoreLabel: UILabel!
 
     weak var delegate: BottomSheetViewControllerDelegate?
     var currentMessage: Message?
@@ -55,10 +56,18 @@ class BottomSheetViewController: UIViewController {
         if let message = currentMessage {
             self.authorLabel.text = message.author
             self.messageContentView.text = message.messageContent
+            self.scoreLabel.text = message.messageScoreString
+
+            // Aesthestics
+            if message.messageScore >= 0 {
+                self.scoreLabel.textColor = UIColor.blue
+            } else {
+                self.scoreLabel.textColor = UIColor.red
+            }
         }
     }
 
-    // For aethestics
+    // For aesthestics
 
     func roundViews() {
         bottomSheetView.layer.cornerRadius = 5
@@ -116,9 +125,11 @@ class BottomSheetViewController: UIViewController {
 
             rateDownButton.isSelected = false
             rateDownButton.backgroundColor = UIColor.clear
+
+            setupViewForMessage()
+
+            
         }
-
-
     }
 
     @IBAction func rateDownMessage(_ sender: Any) {
@@ -129,8 +140,9 @@ class BottomSheetViewController: UIViewController {
 
             rateUpButton.isSelected = false
             rateUpButton.backgroundColor = UIColor.clear
-        }
 
+            setupViewForMessage()
+        }
     }
 
     /*

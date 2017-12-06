@@ -20,6 +20,7 @@
                         <subviews>
                             <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1PB-cf-Bnc" customClass="SceneLocationView" customModule="Guidance" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                                <gestureRecognizers/>
                             </arscnView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ug5-p3-cVt">
                                 <rect key="frame" x="16" y="20" width="48" height="48"/>
@@ -47,6 +48,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="Lya-LJ-Ej1"/>
             </objects>
             <point key="canvasLocation" x="363.768115942029" y="31.793478260869566"/>
         </scene>
