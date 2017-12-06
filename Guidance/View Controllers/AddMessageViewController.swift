@@ -35,7 +35,7 @@ class AddMessageViewController: UIViewController, UITextViewDelegate {
         
         guard let initialNavController = self.navigationController else { return }
         initialNavController.setNavigationBarHidden(false, animated: true)
-        initialNavController.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.lightText]
+        initialNavController.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.black]
         
         addMessageTextView.textContainerInset = UIEdgeInsets(top: 15, left: 15, bottom: 15, right: 15)
         
@@ -48,19 +48,13 @@ class AddMessageViewController: UIViewController, UITextViewDelegate {
         doneButton.isEnabled = !addMessageTextView.text.isEmpty
         self.navigationItem.title = String(describing: maximumWordCount - addMessageTextView.text.count)
     }
-    
+
     // MARK: - Navigation
     @IBAction func addNewMessage(_ sender: UIBarButtonItem) {
         if let message = addMessageTextView.text {
-            
-//            guard let initialNavController = self.navigationController else { return }
-
             delegate?.enteredMessage(message: message)
-            
             self.dismiss(animated: true, completion: nil)
-//            let viewControllerInstance = initialNavController.topViewController as! MainViewController
-//            viewControllerInstance.currentMessage = message
-//            viewControllerInstance.isAddingMessage = true
+
         }
     }
     
@@ -79,8 +73,3 @@ class AddMessageViewController: UIViewController, UITextViewDelegate {
 
 }
 
-extension UIStoryboard {
-    func initialViewController<T: UIViewController>() -> T {
-        return self.instantiateInitialViewController() as! T
-    }
-}
