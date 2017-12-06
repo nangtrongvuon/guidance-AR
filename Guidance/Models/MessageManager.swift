@@ -25,6 +25,7 @@ class MessageManager {
             messages.append(newMessage)
             lastPlacedMessage = newMessage
         }
+        uploadMessage(message: newMessage)
         return newMessage
     }
 
@@ -37,5 +38,24 @@ class MessageManager {
         messageToDelete.opacity = 0
         messageToDelete.removeFromParentNode()
     }
+    func uploadMessage(message: Message) {
+        let httpHandler: HttpHandler = HttpHandler()
+        var uploading_message = [String: String]()
+        uploading_message["message"] = message.messageContent
+        uploading_message["posterId"] = "anonymous"
+        uploading_message["lat"] = "\(message.location.coordinate.latitude)"
+        uploading_message["lon"] = "\(message.location.coordinate.longitude)"
+        uploading_message["color"] = "blue"
+        
+        httpHandler.makeAPICall(
+            url: "http://188.166.209.81:3001/addNote",
+            params: uploading_message,
+            method: .POST,
+            success: {(res, error) in
+                print(res ?? "success empty res", error ?? "empty error")
+            },
+            failure: {(res, error) in
+                print(res ?? "failure empty res", error ?? "empty error")
+        })
+    }
 }
-

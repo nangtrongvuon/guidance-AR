@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		27349F7E1FC7124400EA1122 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2736C8501FB56E2C00EC6492 /* MapViewController.swift */; };
 		2736C84F1FB56A6100EC6492 /* MapViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2736C84E1FB56A6100EC6492 /* MapViewController.storyboard */; };
+		275318ED1FD8506400ADEF5E /* HttpHandler .swift in Sources */ = {isa = PBXBuildFile; fileRef = 275318EC1FD8506400ADEF5E /* HttpHandler .swift */; };
 		E10B71261FA6E0580013CFD9 /* MessageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10B71251FA6E0580013CFD9 /* MessageManager.swift */; };
 		E10B71281FA6E0950013CFD9 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10B71271FA6E0950013CFD9 /* Message.swift */; };
 		E14E48751FA5B65400539ED6 /* MainViewController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14E48741FA5B65400539ED6 /* MainViewController+Actions.swift */; };
@@ -38,6 +39,7 @@
 /* Begin PBXFileReference section */
 		2736C84E1FB56A6100EC6492 /* MapViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MapViewController.storyboard; sourceTree = "<group>"; };
 		2736C8501FB56E2C00EC6492 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		275318EC1FD8506400ADEF5E /* HttpHandler .swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "HttpHandler .swift"; sourceTree = "<group>"; };
 		E10B71251FA6E0580013CFD9 /* MessageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageManager.swift; sourceTree = "<group>"; };
 		E10B71271FA6E0950013CFD9 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		E14E48741FA5B65400539ED6 /* MainViewController+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainViewController+Actions.swift"; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 				E1FE72EF1FA4442100A61E74 /* art.scnassets */,
 				E1FE72F61FA4442100A61E74 /* Assets.xcassets */,
 				E1FE72FB1FA4442100A61E74 /* Info.plist */,
+				275318EC1FD8506400ADEF5E /* HttpHandler .swift */,
 				2736C84E1FB56A6100EC6492 /* MapViewController.storyboard */,
 				2736C8501FB56E2C00EC6492 /* MapViewController.swift */,
 			);
@@ -246,6 +249,7 @@
 				E1F09B941FB2F706009C9651 /* SceneLocationView.swift in Sources */,
 				E14E48751FA5B65400539ED6 /* MainViewController+Actions.swift in Sources */,
 				E1F09B951FB2F706009C9651 /* SceneLocationEstimate.swift in Sources */,
+				275318ED1FD8506400ADEF5E /* HttpHandler .swift in Sources */,
 				E1F09B981FB2F706009C9651 /* SceneLocationEstimate+Extensions.swift in Sources */,
 				E1FE72EE1FA4442100A61E74 /* AppDelegate.swift in Sources */,
 				E1F09B961FB2F706009C9651 /* SCNNode+Extensions.swift in Sources */,
