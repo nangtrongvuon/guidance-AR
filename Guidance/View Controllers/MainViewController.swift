@@ -17,6 +17,7 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
     var isViewingDetail: Bool = false
     var currentMessage: String = ""
     
+    let locationManager = LocationManager()
     var messageManager = MessageManager()
     let bottomSheetInstance = BottomSheetViewController.instance()
     
@@ -45,7 +46,8 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
         
         // Set the scene to the view
         sceneView.scene = scene
-    }
+        
+         }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -204,7 +206,6 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
     func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
         return .none
     }
-
 }
 
 extension UIViewController {

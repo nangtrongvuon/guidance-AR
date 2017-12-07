@@ -7,11 +7,20 @@
 //
 
 import Foundation
-
+import CoreLocation
 import ARKit
 import SceneKit
 
 class MessageManager {
+    struct Location: Codable {
+        let lat, lon: Double
+    }
+    struct StructNewMessage: Codable {
+        let message, color: String
+        let location: Location
+//        let posterId: Int
+        
+    }
     
     var messages = [Message]()
     
@@ -38,8 +47,13 @@ class MessageManager {
         messageToDelete.opacity = 0
         messageToDelete.removeFromParentNode()
     }
+    
+    /**
+     Upload message created by users to the server. status will be printed.
+     - parameter userLocation: user location
+     - Returns: Void
+     */
     func uploadMessage(message: Message) {
-        let httpHandler: HttpHandler = HttpHandler()
         var uploading_message = [String: String]()
         uploading_message["message"] = message.messageContent
         uploading_message["posterId"] = "anonymous"
@@ -47,15 +61,65 @@ class MessageManager {
         uploading_message["lon"] = "\(message.location.coordinate.longitude)"
         uploading_message["color"] = "blue"
         
-        httpHandler.makeAPICall(
+        HttpHandler().makeAPICall(
             url: "http://188.166.209.81:3001/addNote",
             params: uploading_message,
             method: .POST,
             success: {(res, error) in
-                print(res ?? "success empty res", error ?? "empty error")
+                print(res ?? "success empty res", error ?? "|empty error")
             },
             failure: {(res, error) in
-                print(res ?? "failure empty res", error ?? "empty error")
-        })
+                print(res ?? "failure empty res", error ?? "|empty error")
+            }
+        )
+    }
+    
+    /**
+     Fetch messages surrounding user's location. self.messages will be reassigned by fetched messaages
+     - parameter userLocation: user location
+     - parameter success: on success callback
+     - parameter failure: on failure callback
+     - Returns: Void
+     */
+    func fetchMessage(userCoordinate: CLLocationCoordinate2D,
+                      success:@escaping ( String?, NSError? ) -> Void,
+                      failure:@escaping ( String?, NSError? )-> Void) {
+        var fetchingPrams = [String: String]()
+        fetchingPrams["lat"] = "\(userCoordinate.latitude)"
+        fetchingPrams["lon"] = "\(userCoordinate.longitude)"
+        
+        HttpHandler().makeAPICall(
+            url: "http://188.166.209.81:3001/notes",
+            params: fetchingPrams,
+            method: .GET,
+            success: {(res, error) in
+                guard let jsonData = res?.data(using: .utf8) else {return}
+                var newMessages = [Message]() ;
+                
+                let strucFetchedMessages = try! JSONDecoder().decode([StructNewMessage].self, from: jsonData)
+                if (strucFetchedMessages.count > 0) {
+                    for i in 0..<strucFetchedMessages.count {
+                        print("--------------")
+                        print(strucFetchedMessages[i].message)
+                        print(strucFetchedMessages[i].location.lat)
+                        print(strucFetchedMessages[i].location.lon)
+                        print("--------------")
+                        newMessages.append(
+                            Message(messageContent: strucFetchedMessages[i].message,
+                                    coordinates: CLLocationCoordinate2D(
+                                        latitude: strucFetchedMessages[i].location.lat,
+                                        longitude: strucFetchedMessages[i].location.lon)
+                            )
+                        )
+                    }
+                    self.messages = newMessages
+                }
+                success(res, error)
+            },
+            failure: {(res, error) in
+//                print(res ?? "failure empty res", error ?? "|empty error")
+                failure(res, error)
+            }
+        )
     }
 }

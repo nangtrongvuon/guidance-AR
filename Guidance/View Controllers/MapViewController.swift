@@ -15,6 +15,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate{
     var locationManager: CLLocationManager!
     var isMapViewCentered = false
     let zoomSpan = MKCoordinateSpanMake(0.01, 0.01)
+
     /*
     // Only override draw() if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
@@ -30,6 +31,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate{
         locationManager.requestAlwaysAuthorization()
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.startUpdatingLocation()
+
     }
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let newLocation = MKPointAnnotation()

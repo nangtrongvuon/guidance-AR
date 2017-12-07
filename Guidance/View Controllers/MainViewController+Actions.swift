@@ -28,10 +28,6 @@ extension MainViewController: UIPopoverPresentationControllerDelegate {
     }
     // Toggles between add and view mode
     @IBAction func addModeToggle(_ button: UIButton) {
-        //        self.isAddingMessage = !self.isAddingMessage
-        
-        //        print(isAddingMessage)
-
         let addMessageView = AddMessageViewController.instance()
         let nav = UINavigationController(rootViewController: addMessageView as UIViewController)
         nav.modalPresentationStyle = .popover
@@ -46,8 +42,6 @@ extension MainViewController: UIPopoverPresentationControllerDelegate {
                 popover.sourceRect = self.addModeButton.bounds
                 self.present(nav, animated: true, completion: nil)
             }
-
         }
     }
-
 }

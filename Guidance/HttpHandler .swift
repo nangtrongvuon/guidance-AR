@@ -21,6 +21,7 @@ class HttpHandler{
     var request : URLRequest?
     var session : URLSession?
     var responseDataString: String?
+    var responseDataJson: [String]?
     init() {
         responseDataString = ""
     }
@@ -33,32 +34,41 @@ class HttpHandler{
                      success:@escaping ( String?, NSError? ) -> Void,
                      failure:@escaping ( String?, NSError? )-> Void) {
         
-        request = URLRequest(url: URL(string: url)!)
-        
-        print("URL = \(url)")
-        
-        if let params = params {
-            let  jsonData = try? JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
-            
-            request?.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request?.httpBody = jsonData
+        var request: URLRequest
+        if(method == .GET) {
+            var processedUrl = url
+            processedUrl.append("?")
+            for (key, value) in params!{
+                processedUrl.append("\(key)=\(value)&")
+            }
+            print("URL = \(processedUrl)")
+            request = URLRequest(url: URL(string: processedUrl)!)
+        } else {
+            print("URL = \(url)")
+            request = URLRequest(url: URL(string: url)!)
+            if let params = params {
+                let  jsonData = try? JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
+                
+                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                request.httpBody = jsonData
+                request.httpMethod = method.rawValue
+            }
         }
-        request?.httpMethod = method.rawValue
         
         
         let configuration = URLSessionConfiguration.default
-        
-        configuration.timeoutIntervalForRequest = 30
-        configuration.timeoutIntervalForResource = 30
+//        configuration.timeoutIntervalForRequest = 10
+//        configuration.timeoutIntervalForResource = 10
         
         session = URLSession(configuration: configuration)
-        //session?.configuration.timeoutIntervalForResource = 5
-        //session?.configuration.timeoutIntervalForRequest = 5
-        
-        session?.dataTask(with: request! as URLRequest) { (data, response, error) -> Void in
+    
+        session?.dataTask(with: request as URLRequest) { (data, response, error) -> Void in
+            
             if let data = data {
-                let resData = String(data: data, encoding: String.Encoding.utf8) ?? "-"
+                let resData = String(data: data, encoding: String.Encoding.utf8)!
                 self.responseDataString = resData
+                print(resData)
+                
                 if let response = response as? HTTPURLResponse, 200...299 ~= response.statusCode {
                     success(resData, error as NSError?)
                 } else {

@@ -82,6 +82,7 @@
 		E151EFFD1FCD3923004D75D5 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				2736C8501FB56E2C00EC6492 /* MapViewController.swift */,
 				E1FE72F11FA4442100A61E74 /* MainViewController.swift */,
 				E14E48741FA5B65400539ED6 /* MainViewController+Actions.swift */,
 				E14E48761FA5B95100539ED6 /* AddMessageViewController.swift */,
@@ -103,6 +104,7 @@
 		E151EFFF1FCD3948004D75D5 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				2736C84E1FB56A6100EC6492 /* MapViewController.storyboard */,
 				E1FE72F31FA4442100A61E74 /* MainViewController.storyboard */,
 				E14E48781FA5B96600539ED6 /* AddMessageViewController.storyboard */,
 				E1FE72F81FA4442100A61E74 /* LaunchScreen.storyboard */,
@@ -156,8 +158,6 @@
 				E1FE72F61FA4442100A61E74 /* Assets.xcassets */,
 				E1FE72FB1FA4442100A61E74 /* Info.plist */,
 				275318EC1FD8506400ADEF5E /* HttpHandler .swift */,
-				2736C84E1FB56A6100EC6492 /* MapViewController.storyboard */,
-				2736C8501FB56E2C00EC6492 /* MapViewController.swift */,
 			);
 			path = Guidance;
 			sourceTree = "<group>";
