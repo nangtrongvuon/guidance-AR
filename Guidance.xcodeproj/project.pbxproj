@@ -97,11 +97,12 @@
 				E10B71271FA6E0950013CFD9 /* Message.swift */,
 				E10B71251FA6E0580013CFD9 /* MessageManager.swift */,
 				E1FE73031FA44D0000A61E74 /* SCNVector3Extensions.swift */,
+				275318EC1FD8506400ADEF5E /* HttpHandler.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
 		};
-		E151EFFF1FCD3948004D75D5 /* View */ = {
+		E151EFFF1FCD3948004D75D5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				2736C84E1FB56A6100EC6492 /* MapViewController.storyboard */,
@@ -110,7 +111,7 @@
 				E1FE72F81FA4442100A61E74 /* LaunchScreen.storyboard */,
 				E151F0001FCD39CC004D75D5 /* BottomSheetViewController.storyboard */,
 			);
-			path = View;
+			path = Views;
 			sourceTree = "<group>";
 		};
 		E192BD921FB0522200E3076D /* ARCL */ = {
@@ -150,14 +151,13 @@
 			isa = PBXGroup;
 			children = (
 				E151EFFD1FCD3923004D75D5 /* View Controllers */,
-				E151EFFF1FCD3948004D75D5 /* View */,
+				E151EFFF1FCD3948004D75D5 /* Views */,
 				E151EFFE1FCD393A004D75D5 /* Models */,
 				E192BD921FB0522200E3076D /* ARCL */,
 				E1FE72ED1FA4442100A61E74 /* AppDelegate.swift */,
 				E1FE72EF1FA4442100A61E74 /* art.scnassets */,
 				E1FE72F61FA4442100A61E74 /* Assets.xcassets */,
 				E1FE72FB1FA4442100A61E74 /* Info.plist */,
-				275318EC1FD8506400ADEF5E /* HttpHandler.swift */,
 			);
 			path = Guidance;
 			sourceTree = "<group>";
