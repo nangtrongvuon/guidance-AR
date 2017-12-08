@@ -53,8 +53,8 @@ class AddMessageViewController: UIViewController, UITextViewDelegate {
     @IBAction func addNewMessage(_ sender: UIBarButtonItem) {
         if let message = addMessageTextView.text {
             delegate?.enteredMessage(message: message)
+            addMessageTextView.text = ""
             self.dismiss(animated: true, completion: nil)
-
         }
     }
     

@@ -12,7 +12,7 @@ import UIKit
 
 protocol BottomSheetViewControllerDelegate: class {
     func showBottomSheet(withMessage message: Message)
-    func dismissBottomSheet()
+    func markBottomSheetAsDismissed()
 }
 
 class BottomSheetViewController: UIViewController {
@@ -27,7 +27,6 @@ class BottomSheetViewController: UIViewController {
     var currentMessage: Message?
 
     let fullView: CGFloat = 100
-
     var partialView: CGFloat {
         return UIScreen.main.bounds.height - (rateUpButton.frame.maxY + UIApplication.shared.statusBarFrame.height)
     }
@@ -52,7 +51,7 @@ class BottomSheetViewController: UIViewController {
         super.viewDidAppear(animated)
     }
 
-    func setupViewForMessage() {
+    func refreshBottomView() {
         if let message = currentMessage {
             self.authorLabel.text = message.author
             self.messageContentView.text = message.messageContent
@@ -99,7 +98,7 @@ class BottomSheetViewController: UIViewController {
             self.view.frame = CGRect(x: 0, y: self.partialView + frame.height, width: frame.width, height: frame.height)
         })
         print("calling dismiss bottom sheet")
-        delegate?.dismissBottomSheet()
+        delegate?.markBottomSheetAsDismissed()
     }
 
     func prepareBackgroundView() {
@@ -119,42 +118,71 @@ class BottomSheetViewController: UIViewController {
     @IBAction func rateUpMessage(_ sender: Any) {
 
         if let messageToRate = currentMessage {
-            if rateUpButton.isSelected == false {
-                messageToRate.modifyScore(ratingUp: true)
+
+            // If user hasn't voted
+            if !rateUpButton.isSelected && !rateDownButton.isSelected {
+                messageToRate.modifyScore(by: 1)
+                rateUpButton.isSelected = true
+                rateUpButton.backgroundColor = UIColor.blue
+
+                refreshBottomView()
+
+            }
+            // User already voted down
+            else if rateDownButton.isSelected {
+                messageToRate.modifyScore(by: 2)
+
                 rateUpButton.isSelected = true
                 rateUpButton.backgroundColor = UIColor.blue
 
                 rateDownButton.isSelected = false
                 rateDownButton.backgroundColor = UIColor.clear
 
-                setupViewForMessage()
-            } else {
-                messageToRate.modifyScore(ratingUp: false)
+                refreshBottomView()
+            }
+            // User already voted up
+            else if rateUpButton.isSelected {
+                messageToRate.modifyScore(by: -1)
+                rateUpButton.isSelected = false
+                rateUpButton.backgroundColor = UIColor.clear
+
+                refreshBottomView()
+            }
+        }
+    }
+    @IBAction func rateDownMessage(_ sender: Any) {
+        if let messageToRate = currentMessage {
+
+            // If user hasn't voted
+            if !rateUpButton.isSelected  && !rateDownButton.isSelected {
+                messageToRate.modifyScore(by: -1)
+                rateDownButton.isSelected = true
+                rateDownButton.backgroundColor = UIColor.red
+
+                refreshBottomView()
+
+            }
+
+            // User already voted up
+            else if rateUpButton.isSelected {
+                messageToRate.modifyScore(by: -2)
 
                 rateUpButton.isSelected = false
                 rateUpButton.backgroundColor = UIColor.clear
 
-                setupViewForMessage()
-            }
-        }
-    }
-
-    @IBAction func rateDownMessage(_ sender: Any) {
-        if let messageToRate = currentMessage {
-
-            if rateDownButton.isSelected == false {
-                messageToRate.modifyScore(ratingUp: false)
                 rateDownButton.isSelected = true
                 rateDownButton.backgroundColor = UIColor.red
 
-                setupViewForMessage()
-            } else {
-                messageToRate.modifyScore(ratingUp: true)
+                refreshBottomView()
+            }
 
+            // User already voted down
+            else if rateDownButton.isSelected {
+                messageToRate.modifyScore(by: 1)
                 rateDownButton.isSelected = false
                 rateDownButton.backgroundColor = UIColor.clear
 
-                setupViewForMessage()
+                refreshBottomView()
             }
         }
     }

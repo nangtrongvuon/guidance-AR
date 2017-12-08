@@ -16,6 +16,7 @@ class Message: LocationNode {
     var author = UIDevice.current.name
     var messageContent: String?
     var messageScore = 0
+
     var messageScoreString: String {
         get {
             if messageScore > 0 {
@@ -25,49 +26,38 @@ class Message: LocationNode {
             }
         }
     }
+
     var messageFront = SCNPlane()
-    
-    init(messageContent: String, point: SCNVector3) {
-        super.init(location: LocationManager().currentLocation)
-        loadMessage(message: messageContent, atPoint: point)
-        print("created message at \(location), at \(location.altitude)")
-    }
-    
+
     init(messageContent: String) {
+        self.messageContent = messageContent
         super.init(location: LocationManager().currentLocation)
-        loadMessage(message: messageContent)
+        create(message: messageContent)
         print("created message at \(location), at \(location.altitude)")
     }
-    
+
+    init(messageContent: String, point: SCNVector3) {
+        self.messageContent = messageContent
+        super.init(location: LocationManager().currentLocation)
+        create(message: messageContent, point: point)
+        print("created message at \(location), at \(location.altitude)")
+    }
+
     init(messageContent: String, coordinates: CLLocationCoordinate2D) {
+        self.messageContent = messageContent
         super.init(location: CLLocation(coordinate: coordinates, altitude: 11))
-        loadMessage(message: messageContent)
+        create(message: messageContent)
         print("created message at \(location), at \(location.altitude)")
     }
-    
-    
-    func loadMessage(message: String, atPoint point: SCNVector3) {
-        
-        //        let message = SCNText(string: message, extrusionDepth: 0)
-        //        message.containerFrame = CGRect(origin: .zero, size: CGSize(width: 100.0, height: 500.0))
-        //        message.isWrapped = true
-        //
-        //        message.font = UIFont(name: "San Francisco", size: 16)
-        //        message.flatness = 1
-        //        let messageNode = SCNNode(geometry: message)
-        //        center(node: messageNode)
-        //
 
+    func setupTextImage(message: String) -> [UIImage] {
         let messageView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
         let messageLabel = EdgeInsetLabel(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
 
         messageView.backgroundColor = UIColor.blue.withAlphaComponent(0.75)
-
         messageLabel.textInsets = UIEdgeInsetsMake(10, 20, 10, 20)
-
         messageLabel.numberOfLines = 0
         messageLabel.text = message
-        messageLabel.text!.append("\n Score: \(self.messageScore)")
         messageLabel.textAlignment = .center
 
         let sizeToFit = CGSize(width: messageLabel.frame.size.width, height: CGFloat.greatestFiniteMagnitude)
@@ -77,86 +67,65 @@ class Message: LocationNode {
 
         messageView.frame = CGRect(origin: messageViewOrigin, size: CGSize(width: textSize.width, height: textSize.height))
 
-        let backside = self.generateImageFromView(inputView: messageView)
-
-        messageView.addSubview(messageLabel)
         messageLabel.sizeToFit()
 
         messageLabel.textColor = UIColor.white
         messageLabel.font = UIFont(name: "San Francisco", size: 16)
 
-        let textImage = self.generateImageFromView(inputView: messageView)
+        // creates blank image for backside of messages
 
+        messageView.addSubview(messageLabel)
+        let textImage = generateImageFromView(inputView: messageView)
+        let backsideImage = generateImageFromView(inputView: messageView)
+
+        let results = [textImage, backsideImage]
+
+        return results
+
+    }
+
+    // Setups the message
+    func setupMessageNode(textImage: UIImage, backImage: UIImage) {
+        self.messageFront = SCNPlane(width: textImage.size.width / 100, height: textImage.size.height / 100)
+        self.messageFront.firstMaterial!.diffuse.contents = textImage
+        self.messageFront.cornerRadius = 0.1
+
+        let backsideBackgroundBox = SCNPlane(width: textImage.size.width / 100, height: textImage.size.height / 100)
+        backsideBackgroundBox.firstMaterial!.diffuse.contents = backImage
+        backsideBackgroundBox.firstMaterial!.isDoubleSided = true
+        backsideBackgroundBox.cornerRadius = 0.1
+
+        let boxNode = SCNNode(geometry: self.messageFront)
+        let backsideNode = SCNNode(geometry: backsideBackgroundBox)
+
+        self.addChildNode(boxNode)
+        self.addChildNode(backsideNode)
+    }
+
+    func create(message: String) {
+
+        let images = setupTextImage(message: message)
+        let textImage = images[0]
+        let backImage = images[1]
+
+        // Multithread on off queue
         DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
-            self.messageFront = SCNPlane(width: textImage.size.width / 100, height: textImage.size.height / 100)
-            self.messageFront.firstMaterial!.diffuse.contents = textImage
-            self.messageFront.cornerRadius = 0.1
-
-            let messageBack = SCNPlane(width: textImage.size.width / 100, height: textImage.size.height / 100)
-            messageBack.firstMaterial!.diffuse.contents = backside
-            messageBack.firstMaterial!.isDoubleSided = true
-            messageBack.cornerRadius = 0.1
-
-            let boxNode = SCNNode(geometry: self.messageFront)
-            let backsideNode = SCNNode(geometry: messageBack)
-
-            self.addChildNode(boxNode)
-            self.addChildNode(backsideNode)
-
-            self.position = point
+            self.setupMessageNode(textImage: textImage, backImage: backImage)
         }
 
-        self.messageContent = message
+        // Goes back to main queue
+        DispatchQueue.main.async { [unowned self] in
+            self.messageContent = message
+        }
+
     }
     
-    func loadMessage(message: String) {
-
-        let messageView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
-        let messageLabel = EdgeInsetLabel(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
-
-        messageView.backgroundColor = UIColor.blue.withAlphaComponent(0.75)
-
-        messageLabel.textInsets = UIEdgeInsetsMake(10, 20, 10, 20)
-
-        messageLabel.numberOfLines = 0
-        messageLabel.text = message
-        messageLabel.text!.append("\n Score: \(self.messageScore)")
-        messageLabel.textAlignment = .center
-
-        let sizeToFit = CGSize(width: messageLabel.frame.size.width, height: CGFloat.greatestFiniteMagnitude)
-        let textSize = messageLabel.sizeThatFits(sizeToFit)
-
-        let messageViewOrigin = CGPoint(x: 10, y: (messageView.frame.size.height - textSize.height) / 2)
-
-        messageView.frame = CGRect(origin: messageViewOrigin, size: CGSize(width: textSize.width, height: textSize.height))
-
-        let backside = self.generateImageFromView(inputView: messageView)
-
-        messageView.addSubview(messageLabel)
-        messageLabel.sizeToFit()
-
-        messageLabel.textColor = UIColor.white
-        messageLabel.font = UIFont(name: "San Francisco", size: 16)
-
-        let textImage = self.generateImageFromView(inputView: messageView)
-        DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
-            self.messageFront = SCNPlane(width: textImage.size.width / 100, height: textImage.size.height / 100)
-            self.messageFront.firstMaterial!.diffuse.contents = textImage
-            self.messageFront.cornerRadius = 0.1
-
-            let backsideBackgroundBox = SCNPlane(width: textImage.size.width / 100, height: textImage.size.height / 100)
-            backsideBackgroundBox.firstMaterial!.diffuse.contents = backside
-            backsideBackgroundBox.firstMaterial!.isDoubleSided = true
-            backsideBackgroundBox.cornerRadius = 0.1
-
-            let boxNode = SCNNode(geometry: self.messageFront)
-            let backsideNode = SCNNode(geometry: backsideBackgroundBox)
-
-            self.addChildNode(boxNode)
-            self.addChildNode(backsideNode)
-        }
+    func create(message: String, point: SCNVector3) {
+        create(message: message)
+        self.position = point
         self.messageContent = message
     }
+
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -180,30 +149,9 @@ class Message: LocationNode {
         return uiImage
     }
 
-    func modifyScore(ratingUp: Bool) {
+    func modifyScore(by score: Int) {
         // Modifies the message's score
-        if ratingUp {
-            self.messageScore += 1
-        } else {
-            self.messageScore -= 1
-        }
-
-//        // Then refreshes the message's face to reflect the new score
-//        let messageView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
-//        let messageLabel = EdgeInsetLabel(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
-//
-//        messageView.backgroundColor = UIColor.blue.withAlphaComponent(0.75)
-//        messageLabel.textInsets = UIEdgeInsetsMake(10, 20, 10, 20)
-//
-//        messageLabel.numberOfLines = 0
-//        messageLabel.text = self.messageContent
-//        messageLabel.text!.append("\n Score: \(self.messageScore)")
-//        messageLabel.textAlignment = .center
-//
-//        let textImage = self.generateImageFromView(inputView: messageView)
-//
-//        self.messageFront.firstMaterial!.diffuse.contents = textImage
-
+       self.messageScore += score
     }
 }
 
