@@ -22,6 +22,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>This application will use the camera for Augmented Reality.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This application will use your location to display messages around you. </string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This application will use your location to synchronize message positions in the real world.</string>
 	<key>UILaunchStoryboardName</key>

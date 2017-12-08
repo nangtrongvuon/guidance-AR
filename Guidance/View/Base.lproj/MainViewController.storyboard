@@ -29,14 +29,27 @@
                                     <action selector="addModeToggle:" destination="BV1-FR-VrT" eventType="touchUpInside" id="Otd-Cx-vH1"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uk7-tE-gJH">
+                                <rect key="frame" x="356" y="21" width="42" height="46"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="42" id="ehO-fa-Jhy"/>
+                                    <constraint firstAttribute="height" constant="46" id="qda-jN-OD7"/>
+                                </constraints>
+                                <state key="normal" image="map"/>
+                                <connections>
+                                    <action selector="showMapView:" destination="BV1-FR-VrT" eventType="touchUpInside" id="iMv-F7-meR"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="1PB-cf-Bnc" firstAttribute="bottom" secondItem="dZ2-ve-Nwt" secondAttribute="bottom" id="ACQ-Ph-QeO"/>
+                            <constraint firstItem="dZ2-ve-Nwt" firstAttribute="trailing" secondItem="uk7-tE-gJH" secondAttribute="trailing" constant="16" id="E0C-Fd-AqG"/>
                             <constraint firstAttribute="trailing" secondItem="1PB-cf-Bnc" secondAttribute="trailing" id="Oa1-gx-Igp"/>
                             <constraint firstItem="ug5-p3-cVt" firstAttribute="leading" secondItem="dZ2-ve-Nwt" secondAttribute="leading" constant="16" id="Qub-zh-AbL"/>
                             <constraint firstItem="1PB-cf-Bnc" firstAttribute="top" secondItem="3dS-fn-YAu" secondAttribute="top" id="XjE-qt-kdL"/>
                             <constraint firstItem="1PB-cf-Bnc" firstAttribute="leading" secondItem="3dS-fn-YAu" secondAttribute="leading" id="Zdr-xb-51L"/>
+                            <constraint firstItem="uk7-tE-gJH" firstAttribute="centerY" secondItem="ug5-p3-cVt" secondAttribute="centerY" id="fxh-hf-hUY"/>
                             <constraint firstItem="ug5-p3-cVt" firstAttribute="top" secondItem="dZ2-ve-Nwt" secondAttribute="top" id="wMt-vK-a5K"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="dZ2-ve-Nwt"/>
@@ -45,6 +58,7 @@
                     <connections>
                         <outlet property="addModeButton" destination="ug5-p3-cVt" id="vTe-FD-lTa"/>
                         <outlet property="sceneView" destination="1PB-cf-Bnc" id="vuI-Jk-Rxh"/>
+                        <outlet property="showMapButton" destination="uk7-tE-gJH" id="KrI-gu-pRC"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
@@ -75,5 +89,6 @@
     </scenes>
     <resources>
         <image name="add" width="48" height="48"/>
+        <image name="map" width="170" height="170"/>
     </resources>
 </document>
