@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class MapViewController: UIViewController, CLLocationManagerDelegate{
+class MapViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var mapView: MKMapView!
     var locationManager: CLLocationManager!
     var isMapViewCentered = false
@@ -32,18 +32,22 @@ class MapViewController: UIViewController, CLLocationManagerDelegate{
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.startUpdatingLocation()
 
+        print("loaded map view")
     }
+
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let newLocation = MKPointAnnotation()
         newLocation.coordinate = locations[0].coordinate
         if (!isMapViewCentered){
             mapView.centerCoordinate = newLocation.coordinate
             let region = MKCoordinateRegion(center: newLocation.coordinate, span: zoomSpan)
-            mapView.setRegion(region, animated: true)
+            mapView.setRegion(region, animated: false)
             isMapViewCentered = true
         }
+
         print(String(newLocation.coordinate.latitude) + " " + String(newLocation.coordinate.longitude))
     }
+
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("can not access location")
         let alert = UIAlertController(

@@ -11,15 +11,13 @@ import SceneKit
 import ARKit
 import CoreLocation
 
-class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewControllerDelegate, BottomSheetViewControllerDelegate {
+class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AddMessageViewControllerDelegate, BottomSheetViewControllerDelegate {
 
     var isAddingMessage: Bool = false
     var showingBottomSheet: Bool = false
     var currentMessage: String = ""
-    
-    let locationManager = LocationManager()
-    var messageManager = MessageManager()
 
+    var messageManager = MessageManager()
 
     var bottomSheetInstance = BottomSheetViewController()
 
@@ -47,8 +45,11 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
         
         // Set the scene to the view
         sceneView.scene = scene
+
+        guard let currentUserCoordinates = sceneView.locationManager.currentLocation?.coordinate else { print("couldn't get coordinates"); return }
+        messageManager.fetchMessage(userCoordinate: currentUserCoordinates)
         
-         }
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -118,8 +119,6 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
         bottomSheetInstance.view.frame = CGRect(x: 0, y: self.view.frame.maxY, width: width, height: height / 2)
     }
 
-    
-    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let sceneView = self.sceneView else {
             return
@@ -149,10 +148,38 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
         let anchor = ARAnchor(transform: simd_float4x4(emptyNode.transform))
         sceneView.session.add(anchor: anchor)
 
-        let newMessage = messageManager.createMessage(atPoint: worldPosition, withContent: currentMessage, inView: sceneView)
-        sceneView.scene.rootNode.addChildNode(newMessage)
-        
-        self.isAddingMessage = false
+    }
+
+    func showFetchedMessages() {
+
+        guard let currentUserCoordinates = sceneView.locationManager.currentLocation?.coordinate else { print("couldn't get coordinates"); return }
+
+        messageManager.fetchMessage(userCoordinate: currentUserCoordinates)
+
+        print(messageManager.messages)
+        for message in messageManager.messages {
+            // Skips messages that were already placed
+            if message.isPlaced {
+                continue
+            }
+
+            messageManager.lastPlacedMessage = message
+
+            // Randomly creates anchors around the user
+            if let currentFrame = sceneView.session.currentFrame {
+                var translation = matrix_identity_float4x4
+                translation.columns.3.x = Float.random(min: -1, max: 1)
+                translation.columns.3.y = Float.random(min: -1, max: 1)
+                translation.columns.3.z = Float.random(min: -1, max: -0.4)
+                var transform = simd_mul(currentFrame.camera.transform, translation)
+
+                let rotation = simd_float4x4(SCNMatrix4MakeRotation(Float.pi / 2, 0, 0, 1))
+                transform = simd_mul(transform, rotation)
+
+                let anchor = ARAnchor(transform: transform)
+                sceneView.session.add(anchor: anchor)
+            }
+        }
     }
 
     // We use this to determine the location of a tap. In the 3D world, we would like this to refer to a direction.
@@ -186,7 +213,29 @@ class MainViewController: UIViewController, ARSCNViewDelegate, AddMessageViewCon
         let dz = min.z + 0.5 * (max.z - min.z)
         node.pivot = SCNMatrix4MakeTranslation(dx, dy, dz)
     }
-    
+
+    // This method is called for each new anchor that is added to the scene.
+    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+
+        // Adding a new message
+        if isAddingMessage {
+            messageManager.createMessage(withContent: currentMessage, inView: sceneView)
+        }
+
+        if let newMessage = messageManager.lastPlacedMessage {
+
+            // Upload msg if just added
+            if isAddingMessage {
+                messageManager.uploadMessage(message: newMessage)
+                self.isAddingMessage = false
+            }
+
+            newMessage.isPlaced = true
+            print("placed new message")
+            node.addChildNode(newMessage)
+        }
+
+    }
     
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user
@@ -220,6 +269,28 @@ extension UIViewController {
 extension UIStoryboard {
     func initialViewController<T: UIViewController>() -> T {
         return self.instantiateInitialViewController() as! T
+    }
+}
+
+public extension Float {
+
+    // Returns a random floating point number between 0.0 and 1.0, inclusive.
+
+    public static var random:Float {
+        get {
+            return Float(arc4random()) / 0xFFFFFFFF
+        }
+    }
+    /*
+     Create a random num Float
+
+     - parameter min: Float
+     - parameter max: Float
+
+     - returns: Float
+     */
+    public static func random(min: Float, max: Float) -> Float {
+        return Float.random * (max - min) + min
     }
 }
 

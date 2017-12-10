@@ -12,11 +12,11 @@ import SceneKit
 extension MainViewController: UIPopoverPresentationControllerDelegate {
 
     @IBAction func addModeToggle(_ button: UIButton) {
-        var addMessageView = AddMessageViewController()
+        let addMessageView = AddMessageViewController.instance()
         var nav = UINavigationController()
 
         DispatchQueue.main.async { [unowned self] in
-            addMessageView = AddMessageViewController.instance()
+
             nav = UINavigationController(rootViewController: addMessageView as UIViewController)
             nav.modalPresentationStyle = .popover
 
@@ -34,11 +34,12 @@ extension MainViewController: UIPopoverPresentationControllerDelegate {
     }
 
     @IBAction func showMapView (_ button: UIButton){
-        var popMapView = MapViewController()
+        let popMapView = MapViewController.instance()
         var nav = UINavigationController()
 
+        showFetchedMessages()
+
         DispatchQueue.main.async { [unowned self] in
-            popMapView = MapViewController.instance()
 
             nav = UINavigationController(rootViewController: popMapView as UIViewController)
             nav.isNavigationBarHidden = true

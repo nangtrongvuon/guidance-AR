@@ -18,24 +18,37 @@ class MessageManager {
     struct StructNewMessage: Codable {
         let message, color: String
         let location: Location
-//        let posterId: Int
+        //        let posterId: Int
         
     }
     
     var messages = [Message]()
-    
+    let locationManager = LocationManager()
+
     var lastPlacedMessage: Message?
+
+    func createMessage(withContent content: String, inView view: ARSCNView)  {
+        guard let currentUserLocation = locationManager.currentLocation else { return }
+            let newMessage = Message(messageContent: content, location: currentUserLocation)
+
+            if let currentCameraOrientation = view.pointOfView?.orientation {
+                newMessage.orientation = currentCameraOrientation
+                messages.append(newMessage)
+                lastPlacedMessage = newMessage
+            }
+    }
     
-    func createMessage(atPoint point: SCNVector3, withContent content: String, inView view: ARSCNView) -> Message {
-        let newMessage = Message(messageContent: content, point: point)
-        
-        if let currentCameraOrientation = view.pointOfView?.orientation {
-            newMessage.orientation = currentCameraOrientation
-            messages.append(newMessage)
-            lastPlacedMessage = newMessage
-        }
-        uploadMessage(message: newMessage)
-        return newMessage
+    func createMessage(atPoint point: SCNVector3, withContent content: String, inView view: ARSCNView)  {
+        guard let currentUserLocation = locationManager.currentLocation else { return }
+
+            let newMessage = Message(messageContent: content, location: currentUserLocation, point: point)
+
+            if let currentCameraOrientation = view.pointOfView?.orientation {
+                newMessage.orientation = currentCameraOrientation
+                messages.append(newMessage)
+                lastPlacedMessage = newMessage
+            }
+            uploadMessage(message: newMessage)
     }
 
     func deleteMessage(messageToDelete: Message) {
@@ -67,10 +80,10 @@ class MessageManager {
             method: .POST,
             success: {(res, error) in
                 print(res ?? "success empty res", error ?? "|empty error")
-            },
+        },
             failure: {(res, error) in
                 print(res ?? "failure empty res", error ?? "|empty error")
-            }
+        }
         )
     }
     
@@ -81,18 +94,25 @@ class MessageManager {
      - parameter failure: on failure callback
      - Returns: Void
      */
-    func fetchMessage(userCoordinate: CLLocationCoordinate2D,
-                      success:@escaping ( String?, NSError? ) -> Void,
-                      failure:@escaping ( String?, NSError? )-> Void) {
+    func fetchMessage(userCoordinate: CLLocationCoordinate2D) {
+
+        guard let currentLocation = locationManager.currentLocation else { return }
+
         var fetchingPrams = [String: String]()
-        fetchingPrams["lat"] = "\(userCoordinate.latitude)"
-        fetchingPrams["lon"] = "\(userCoordinate.longitude)"
-        
+//        fetchingPrams["lat"] = "\(userCoordinate.latitude)"
+//        fetchingPrams["lon"] = "\(userCoordinate.longitude)"
+
+        fetchingPrams["lat"] = "\(currentLocation.coordinate.latitude)"
+        fetchingPrams["lon"] = "\(currentLocation.coordinate.longitude)"
+
         HttpHandler().makeAPICall(
             url: "http://188.166.209.81:3001/notes",
             params: fetchingPrams,
             method: .GET,
             success: {(res, error) in
+
+                print("fetching messages")
+
                 guard let jsonData = res?.data(using: .utf8) else {return}
                 var newMessages = [Message]() ;
                 
@@ -106,20 +126,20 @@ class MessageManager {
                         print("--------------")
                         newMessages.append(
                             Message(messageContent: strucFetchedMessages[i].message,
-                                    coordinates: CLLocationCoordinate2D(
+                                    location: CLLocation(coordinate: CLLocationCoordinate2D(
                                         latitude: strucFetchedMessages[i].location.lat,
-                                        longitude: strucFetchedMessages[i].location.lon)
+                                        longitude: strucFetchedMessages[i].location.lon), altitude: currentLocation.altitude)
                             )
                         )
                     }
                     self.messages = newMessages
                 }
-                success(res, error)
-            },
+                //                success(res, error)
+        },
             failure: {(res, error) in
-//                print(res ?? "failure empty res", error ?? "|empty error")
-                failure(res, error)
-            }
+                print(res ?? "failure empty res", error ?? "empty error")
+                //                failure(res, error)
+        }
         )
     }
 }

@@ -16,6 +16,7 @@ class Message: LocationNode {
     var author = UIDevice.current.name
     var messageContent: String?
     var messageScore = 0
+    var isPlaced = false
 
     var messageScoreString: String {
         get {
@@ -29,56 +30,58 @@ class Message: LocationNode {
 
     var messageFront = SCNPlane()
 
-    init(messageContent: String) {
+    init(messageContent: String, location: CLLocation) {
         self.messageContent = messageContent
-        super.init(location: LocationManager().currentLocation)
+        super.init(location: location)
         create(message: messageContent)
         print("created message at \(location), at \(location.altitude)")
     }
 
-    init(messageContent: String, point: SCNVector3) {
+    init(messageContent: String, location: CLLocation, point: SCNVector3) {
         self.messageContent = messageContent
-        super.init(location: LocationManager().currentLocation)
+        super.init(location: location)
         create(message: messageContent, point: point)
         print("created message at \(location), at \(location.altitude)")
     }
 
-    init(messageContent: String, coordinates: CLLocationCoordinate2D) {
-        self.messageContent = messageContent
-        super.init(location: CLLocation(coordinate: coordinates, altitude: 11))
-        create(message: messageContent)
-        print("created message at \(location), at \(location.altitude)")
-    }
+
 
     func setupTextImage(message: String) -> [UIImage] {
-        let messageView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
-        let messageLabel = EdgeInsetLabel(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
 
-        messageView.backgroundColor = UIColor.blue.withAlphaComponent(0.75)
-        messageLabel.textInsets = UIEdgeInsetsMake(10, 20, 10, 20)
-        messageLabel.numberOfLines = 0
-        messageLabel.text = message
-        messageLabel.textAlignment = .center
+        var results = [UIImage]()
 
-        let sizeToFit = CGSize(width: messageLabel.frame.size.width, height: CGFloat.greatestFiniteMagnitude)
-        let textSize = messageLabel.sizeThatFits(sizeToFit)
 
-        let messageViewOrigin = CGPoint(x: 10, y: (messageView.frame.size.height - textSize.height) / 2)
 
-        messageView.frame = CGRect(origin: messageViewOrigin, size: CGSize(width: textSize.width, height: textSize.height))
+        DispatchQueue.main.sync {
+            let messageView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
+            let messageLabel = EdgeInsetLabel(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
 
-        messageLabel.sizeToFit()
+            messageView.backgroundColor = UIColor.blue.withAlphaComponent(0.75)
+            messageLabel.textInsets = UIEdgeInsetsMake(10, 20, 10, 20)
+            messageLabel.numberOfLines = 0
+            messageLabel.text = message
+            messageLabel.textAlignment = .center
 
-        messageLabel.textColor = UIColor.white
-        messageLabel.font = UIFont(name: "San Francisco", size: 16)
+            let sizeToFit = CGSize(width: messageLabel.frame.size.width, height: CGFloat.greatestFiniteMagnitude)
+            let textSize = messageLabel.sizeThatFits(sizeToFit)
 
-        // creates blank image for backside of messages
+            let messageViewOrigin = CGPoint(x: 10, y: (messageView.frame.size.height - textSize.height) / 2)
 
-        messageView.addSubview(messageLabel)
-        let textImage = generateImageFromView(inputView: messageView)
-        let backsideImage = generateImageFromView(inputView: messageView)
+            messageView.frame = CGRect(origin: messageViewOrigin, size: CGSize(width: textSize.width, height: textSize.height))
 
-        let results = [textImage, backsideImage]
+            messageLabel.sizeToFit()
+
+            messageLabel.textColor = UIColor.white
+            messageLabel.font = UIFont(name: "San Francisco", size: 16)
+
+            // creates blank image for backside of messages
+            let backsideImage = self.generateImageFromView(inputView: messageView)
+            messageView.addSubview(messageLabel)
+            let textImage = self.generateImageFromView(inputView: messageView)
+
+            results.append(textImage)
+            results.append(backsideImage)
+        }
 
         return results
 
@@ -105,12 +108,10 @@ class Message: LocationNode {
     func create(message: String) {
 
         let images = setupTextImage(message: message)
-        let textImage = images[0]
-        let backImage = images[1]
 
         // Multithread on off queue
         DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
-            self.setupMessageNode(textImage: textImage, backImage: backImage)
+            self.setupMessageNode(textImage: images[0], backImage: images[1])
         }
 
         // Goes back to main queue
