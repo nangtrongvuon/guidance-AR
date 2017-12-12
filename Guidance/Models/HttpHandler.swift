@@ -65,6 +65,8 @@ class HttpHandler{
         session?.dataTask(with: request as URLRequest) { (data, response, error) -> Void in
             
             if let data = data {
+
+                print(data)
                 let resData = String(data: data, encoding: String.Encoding.utf8)!
                 self.responseDataString = resData
                 print(resData)

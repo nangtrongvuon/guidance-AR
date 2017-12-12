@@ -50,8 +50,6 @@ class Message: LocationNode {
 
         var results = [UIImage]()
 
-
-
         DispatchQueue.main.sync {
             let messageView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
             let messageLabel = EdgeInsetLabel(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))

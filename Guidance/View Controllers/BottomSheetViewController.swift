@@ -93,12 +93,14 @@ class BottomSheetViewController: UIViewController {
     }
 
     func closeBottomSheet() {
+
         UIView.animate(withDuration: 0.5, animations: {
             let frame = self.view.frame
             self.view.frame = CGRect(x: 0, y: self.partialView + frame.height, width: frame.width, height: frame.height)
         })
-        print("calling dismiss bottom sheet")
+
         delegate?.markBottomSheetAsDismissed()
+
     }
 
     func prepareBackgroundView() {

@@ -14,10 +14,12 @@ import CoreLocation
 class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AddMessageViewControllerDelegate, BottomSheetViewControllerDelegate {
 
     var isAddingMessage: Bool = false
+    var isFetchingMessage: Bool = false
     var showingBottomSheet: Bool = false
     var currentMessage: String = ""
 
     var messageManager = MessageManager()
+    var sceneAnchors = [ARAnchor]()
 
     var bottomSheetInstance = BottomSheetViewController()
 
@@ -33,7 +35,7 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
 
         // Set the view's delegate
         sceneView.delegate = self
-        bottomSheetInstance.delegate = self
+
         
         sceneView.frame = view.bounds
         
@@ -47,7 +49,9 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         sceneView.scene = scene
 
         guard let currentUserCoordinates = sceneView.locationManager.currentLocation?.coordinate else { print("couldn't get coordinates"); return }
-        messageManager.fetchMessage(userCoordinate: currentUserCoordinates)
+        messageManager.fetchMessage(userCoordinate: currentUserCoordinates, onComplete: {
+            print("initial fetch complete")
+        })
         
     }
     
@@ -55,11 +59,13 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         super.viewWillAppear(animated)
 
         bottomSheetInstance = BottomSheetViewController.instance()
+        bottomSheetInstance.delegate = self
 
         setupBottomSheet()
 
         // Create a session configuration
         let configuration = ARWorldTrackingConfiguration()
+
         
         // Run the view's session
         sceneView.session.run(configuration)
@@ -80,7 +86,11 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     
     func enteredMessage(message: String) {
         currentMessage = message
+
+        print(isAddingMessage)
+
         self.isAddingMessage = true
+
     }
 
     func message(at point: CGPoint) -> Message? {
@@ -98,13 +108,15 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         bottomSheetInstance.currentMessage = message
         bottomSheetInstance.refreshBottomView()
 
+
         if !showingBottomSheet {
             bottomSheetInstance.displayBottomSheet()
         }
     }
 
     func markBottomSheetAsDismissed() {
-        self.showingBottomSheet = false
+        showingBottomSheet = false
+        print("bottom sheet is not showing")
     }
 
     func setupBottomSheet() {
@@ -128,13 +140,13 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
 
         if !isAddingMessage {
             if showingBottomSheet {
+                print("bottom sheet is showing")
                 bottomSheetInstance.closeBottomSheet()
             }
 
             if let foundMessage = message(at: touchLocation) {
                 showBottomSheet(withMessage: foundMessage)
-                self.showingBottomSheet = true
-                print(showingBottomSheet)
+                showingBottomSheet = true
             }
         }
 
@@ -147,6 +159,7 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
 
         let anchor = ARAnchor(transform: simd_float4x4(emptyNode.transform))
         sceneView.session.add(anchor: anchor)
+        sceneAnchors.append(anchor)
 
     }
 
@@ -154,32 +167,53 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
 
         guard let currentUserCoordinates = sceneView.locationManager.currentLocation?.coordinate else { print("couldn't get coordinates"); return }
 
-        messageManager.fetchMessage(userCoordinate: currentUserCoordinates)
-
-        print(messageManager.messages)
-        for message in messageManager.messages {
-            // Skips messages that were already placed
-            if message.isPlaced {
-                continue
-            }
-
-            messageManager.lastPlacedMessage = message
-
-            // Randomly creates anchors around the user
-            if let currentFrame = sceneView.session.currentFrame {
-                var translation = matrix_identity_float4x4
-                translation.columns.3.x = Float.random(min: -1, max: 1)
-                translation.columns.3.y = Float.random(min: -1, max: 1)
-                translation.columns.3.z = Float.random(min: -1, max: -0.4)
-                var transform = simd_mul(currentFrame.camera.transform, translation)
-
-                let rotation = simd_float4x4(SCNMatrix4MakeRotation(Float.pi / 2, 0, 0, 1))
-                transform = simd_mul(transform, rotation)
-
-                let anchor = ARAnchor(transform: transform)
-                sceneView.session.add(anchor: anchor)
-            }
+        sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
+            node.removeFromParentNode()
         }
+
+        sceneAnchors.removeAll()
+
+        isAddingMessage = false
+        isFetchingMessage = true
+
+        messageManager.fetchMessage(userCoordinate: currentUserCoordinates, onComplete: { [unowned self] in
+
+            print("fetch complete")
+            for message in self.messageManager.messages {
+
+                print(message.messageContent)
+                
+                // Skips messages that were already placed
+                if message.isPlaced {
+                    continue
+                }
+
+                self.messageManager.lastPlacedMessage = message
+
+                // Randomly creates anchors around the user
+                if let currentFrame = self.sceneView.session.currentFrame {
+                    var translation = matrix_identity_float4x4
+                    translation.columns.3.x = Float.random(min: -1, max: 1)
+                    translation.columns.3.y = Float.random(min: -1, max: 1)
+                    translation.columns.3.z = Float.random(min: -1, max: -0.4)
+                    var transform = simd_mul(currentFrame.camera.transform, translation)
+
+                    let rotation = simd_float4x4(SCNMatrix4MakeRotation(Float.pi / 2, 0, 0, 1))
+                    transform = simd_mul(transform, rotation)
+
+                    let anchor = ARAnchor(transform: transform)
+                    self.sceneView.session.add(anchor: anchor)
+                    self.sceneAnchors.append(anchor)
+
+                    message.create(message: message.messageContent!)
+                    message.transform = SCNMatrix4(transform)
+                    self.sceneView.scene.rootNode.addChildNode(message)
+
+                }
+            }
+
+            self.isFetchingMessage = false
+        })
     }
 
     // We use this to determine the location of a tap. In the 3D world, we would like this to refer to a direction.
@@ -217,26 +251,28 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     // This method is called for each new anchor that is added to the scene.
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
 
-        // Adding a new message
+        if isFetchingMessage { return }
+
         if isAddingMessage {
             messageManager.createMessage(withContent: currentMessage, inView: sceneView)
         }
 
+        // Adding a new message
         if let newMessage = messageManager.lastPlacedMessage {
+            if isAddingMessage {
 
             // Upload msg if just added
-            if isAddingMessage {
-                messageManager.uploadMessage(message: newMessage)
-                self.isAddingMessage = false
-            }
+            messageManager.uploadMessage(message: newMessage)
+            self.isAddingMessage = false
 
             newMessage.isPlaced = true
-            print("placed new message")
+            print("placed new message", newMessage.messageContent)
             node.addChildNode(newMessage)
+            }
         }
 
     }
-    
+
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user
         
@@ -244,12 +280,14 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     
     func sessionWasInterrupted(_ session: ARSession) {
         // Inform the user that the session has been interrupted, for example, by presenting an overlay
-        
+
     }
     
     func sessionInterruptionEnded(_ session: ARSession) {
         // Reset tracking and/or remove existing anchors if consistent tracking is required
-        
+        // Create a session configuration
+        let configuration = ARWorldTrackingConfiguration()
+        session.run(configuration, options: [.removeExistingAnchors, .resetTracking])
     }
 
     // needed for modal

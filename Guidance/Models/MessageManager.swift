@@ -51,14 +51,25 @@ class MessageManager {
             uploadMessage(message: newMessage)
     }
 
-    func deleteMessage(messageToDelete: Message) {
-        guard let deleteIndex = messages.index(of: messageToDelete) else { return }
+    func clearAllMessages() {
+        for message in messages {
+            unloadMessage(messageToDelete: message)
+        }
+    }
 
-        messages.remove(at: deleteIndex)
+    func unloadMessage(messageToDelete: Message) {
         
-        SCNTransaction.animationDuration = 1.0
-        messageToDelete.opacity = 0
-        messageToDelete.removeFromParentNode()
+//        guard let deleteIndex = messages.index(of: messageToDelete) else { return }
+
+        DispatchQueue.global().async {
+
+            SCNTransaction.animationDuration = 1.0
+            messageToDelete.opacity = 0
+            messageToDelete.removeFromParentNode()
+        }
+
+//        self.messages.remove(at: deleteIndex)
+
     }
     
     /**
@@ -72,6 +83,7 @@ class MessageManager {
         uploading_message["posterId"] = "anonymous"
         uploading_message["lat"] = "\(message.location.coordinate.latitude)"
         uploading_message["lon"] = "\(message.location.coordinate.longitude)"
+        uploading_message["altitude"] = "\(message.location.altitude)"
         uploading_message["color"] = "blue"
         
         HttpHandler().makeAPICall(
@@ -94,7 +106,7 @@ class MessageManager {
      - parameter failure: on failure callback
      - Returns: Void
      */
-    func fetchMessage(userCoordinate: CLLocationCoordinate2D) {
+    func fetchMessage(userCoordinate: CLLocationCoordinate2D, onComplete:@escaping () -> Void) {
 
         guard let currentLocation = locationManager.currentLocation else { return }
 
@@ -104,6 +116,7 @@ class MessageManager {
 
         fetchingPrams["lat"] = "\(currentLocation.coordinate.latitude)"
         fetchingPrams["lon"] = "\(currentLocation.coordinate.longitude)"
+//        fetchingPrams["altitude"] = "\(currentLocation.altitude)"
 
         HttpHandler().makeAPICall(
             url: "http://188.166.209.81:3001/notes",
@@ -112,7 +125,7 @@ class MessageManager {
             success: {(res, error) in
 
                 print("fetching messages")
-
+                print(res)
                 guard let jsonData = res?.data(using: .utf8) else {return}
                 var newMessages = [Message]() ;
                 
@@ -122,6 +135,7 @@ class MessageManager {
                         print("--------------")
                         print(strucFetchedMessages[i].message)
                         print(strucFetchedMessages[i].location.lat)
+                        print(strucFetchedMessages[i].location.lon)
                         print(strucFetchedMessages[i].location.lon)
                         print("--------------")
                         newMessages.append(
@@ -134,7 +148,7 @@ class MessageManager {
                     }
                     self.messages = newMessages
                 }
-                //                success(res, error)
+                onComplete()
         },
             failure: {(res, error) in
                 print(res ?? "failure empty res", error ?? "empty error")
