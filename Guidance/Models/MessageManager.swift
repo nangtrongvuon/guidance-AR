@@ -13,7 +13,7 @@ import SceneKit
 
 class MessageManager {
     struct Location: Codable {
-        let lat, lon: Double
+        let lat, lon, altitude: Double
     }
     struct StructNewMessage: Codable {
         let message, color: String
@@ -125,7 +125,7 @@ class MessageManager {
             success: {(res, error) in
 
                 print("fetching messages")
-                print(res)
+                
                 guard let jsonData = res?.data(using: .utf8) else {return}
                 var newMessages = [Message]() ;
                 
@@ -136,7 +136,7 @@ class MessageManager {
                         print(strucFetchedMessages[i].message)
                         print(strucFetchedMessages[i].location.lat)
                         print(strucFetchedMessages[i].location.lon)
-                        print(strucFetchedMessages[i].location.lon)
+                        print(strucFetchedMessages[i].location.altitude)
                         print("--------------")
                         newMessages.append(
                             Message(messageContent: strucFetchedMessages[i].message,

@@ -167,9 +167,7 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
 
         guard let currentUserCoordinates = sceneView.locationManager.currentLocation?.coordinate else { print("couldn't get coordinates"); return }
 
-        sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
-            node.removeFromParentNode()
-        }
+        messageManager.clearAllMessages()
 
         sceneAnchors.removeAll()
 
@@ -194,8 +192,8 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
                 if let currentFrame = self.sceneView.session.currentFrame {
                     var translation = matrix_identity_float4x4
                     translation.columns.3.x = Float.random(min: -1, max: 1)
-                    translation.columns.3.y = Float.random(min: -1, max: 1)
-                    translation.columns.3.z = Float.random(min: -1, max: -0.4)
+                    translation.columns.3.y = Float(message.location.altitude * -0.001)
+                    translation.columns.3.z = Float.random(min: -2, max: -1)
                     var transform = simd_mul(currentFrame.camera.transform, translation)
 
                     let rotation = simd_float4x4(SCNMatrix4MakeRotation(Float.pi / 2, 0, 0, 1))
@@ -205,7 +203,6 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
                     self.sceneView.session.add(anchor: anchor)
                     self.sceneAnchors.append(anchor)
 
-                    message.create(message: message.messageContent!)
                     message.transform = SCNMatrix4(transform)
                     self.sceneView.scene.rootNode.addChildNode(message)
 

@@ -36,6 +36,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+
         let newLocation = MKPointAnnotation()
         newLocation.coordinate = locations[0].coordinate
         if (!isMapViewCentered){
