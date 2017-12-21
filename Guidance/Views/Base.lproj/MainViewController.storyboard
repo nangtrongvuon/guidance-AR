@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13770" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="q4c-5a-d11">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="q4c-5a-d11">
     <device id="retina5_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13770"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -18,45 +18,60 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1PB-cf-Bnc" customClass="SceneLocationView" customModule="Guidance" customModuleProvider="target">
+                            <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1PB-cf-Bnc" customClass="SceneLocationView" customModule="Guidance" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <gestureRecognizers/>
                             </arscnView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ug5-p3-cVt">
                                 <rect key="frame" x="16" y="20" width="48" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="o8q-cx-qO8"/>
+                                    <constraint firstAttribute="width" constant="48" id="z1n-iU-IDU"/>
+                                </constraints>
                                 <state key="normal" image="add"/>
                                 <connections>
                                     <action selector="addModeToggle:" destination="BV1-FR-VrT" eventType="touchUpInside" id="Otd-Cx-vH1"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uk7-tE-gJH">
-                                <rect key="frame" x="356" y="21" width="42" height="46"/>
+                                <rect key="frame" x="350" y="21" width="48" height="48"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="42" id="ehO-fa-Jhy"/>
-                                    <constraint firstAttribute="height" constant="46" id="qda-jN-OD7"/>
+                                    <constraint firstAttribute="width" constant="48" id="0qq-hA-iRE"/>
+                                    <constraint firstAttribute="height" constant="48" id="Cj4-ho-Paj"/>
                                 </constraints>
                                 <state key="normal" image="map"/>
                                 <connections>
                                     <action selector="showMapView:" destination="BV1-FR-VrT" eventType="touchUpInside" id="iMv-F7-meR"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6UO-T3-yTF" userLabel="Refresh Button">
+                                <rect key="frame" x="350" y="77" width="48" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="48" id="H2r-5F-jAb"/>
+                                    <constraint firstAttribute="height" constant="48" id="fqc-8n-QMd"/>
+                                </constraints>
+                                <state key="normal" image="restart"/>
+                                <connections>
+                                    <action selector="refreshView:" destination="BV1-FR-VrT" eventType="touchUpInside" id="dQc-rf-2zB"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="1PB-cf-Bnc" firstAttribute="bottom" secondItem="dZ2-ve-Nwt" secondAttribute="bottom" id="ACQ-Ph-QeO"/>
-                            <constraint firstItem="dZ2-ve-Nwt" firstAttribute="trailing" secondItem="uk7-tE-gJH" secondAttribute="trailing" constant="16" id="E0C-Fd-AqG"/>
-                            <constraint firstAttribute="trailing" secondItem="1PB-cf-Bnc" secondAttribute="trailing" id="Oa1-gx-Igp"/>
-                            <constraint firstItem="ug5-p3-cVt" firstAttribute="leading" secondItem="dZ2-ve-Nwt" secondAttribute="leading" constant="16" id="Qub-zh-AbL"/>
-                            <constraint firstItem="1PB-cf-Bnc" firstAttribute="top" secondItem="3dS-fn-YAu" secondAttribute="top" id="XjE-qt-kdL"/>
-                            <constraint firstItem="1PB-cf-Bnc" firstAttribute="leading" secondItem="3dS-fn-YAu" secondAttribute="leading" id="Zdr-xb-51L"/>
-                            <constraint firstItem="uk7-tE-gJH" firstAttribute="centerY" secondItem="ug5-p3-cVt" secondAttribute="centerY" id="fxh-hf-hUY"/>
-                            <constraint firstItem="ug5-p3-cVt" firstAttribute="top" secondItem="dZ2-ve-Nwt" secondAttribute="top" id="wMt-vK-a5K"/>
+                            <constraint firstItem="ug5-p3-cVt" firstAttribute="leading" secondItem="dZ2-ve-Nwt" secondAttribute="leading" constant="16" id="OpQ-Ft-sg8"/>
+                            <constraint firstItem="uk7-tE-gJH" firstAttribute="top" secondItem="dZ2-ve-Nwt" secondAttribute="top" constant="1" id="bus-op-UdH"/>
+                            <constraint firstItem="dZ2-ve-Nwt" firstAttribute="trailing" secondItem="6UO-T3-yTF" secondAttribute="trailing" constant="16" id="epO-cm-Hb4"/>
+                            <constraint firstItem="dZ2-ve-Nwt" firstAttribute="trailing" secondItem="uk7-tE-gJH" secondAttribute="trailing" constant="16" id="ivU-08-6cK"/>
+                            <constraint firstItem="ug5-p3-cVt" firstAttribute="top" secondItem="dZ2-ve-Nwt" secondAttribute="top" id="jGn-cF-Ytl"/>
+                            <constraint firstItem="6UO-T3-yTF" firstAttribute="top" secondItem="uk7-tE-gJH" secondAttribute="bottom" constant="8" id="k5v-Wo-9la"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="dZ2-ve-Nwt"/>
                     </view>
                     <navigationItem key="navigationItem" id="XoD-yZ-Wdg"/>
                     <connections>
                         <outlet property="addModeButton" destination="ug5-p3-cVt" id="vTe-FD-lTa"/>
+                        <outlet property="refreshButton" destination="6UO-T3-yTF" id="jpH-NB-fAO"/>
                         <outlet property="sceneView" destination="1PB-cf-Bnc" id="vuI-Jk-Rxh"/>
                         <outlet property="showMapButton" destination="uk7-tE-gJH" id="KrI-gu-pRC"/>
                     </connections>
@@ -90,5 +105,6 @@
     <resources>
         <image name="add" width="48" height="48"/>
         <image name="map" width="170" height="170"/>
+        <image name="restart" width="20" height="23"/>
     </resources>
 </document>
