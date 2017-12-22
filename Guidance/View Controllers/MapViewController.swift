@@ -13,6 +13,7 @@ import CoreLocation
 class MapViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var mapView: MKMapView!
     var locationManager: CLLocationManager!
+    var messageManager: MessageManager!
     var isMapViewCentered = false
     let zoomSpan = MKCoordinateSpanMake(0.01, 0.01)
 
@@ -29,7 +30,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
         locationManager = CLLocationManager()
         locationManager.delegate = self
         locationManager.requestAlwaysAuthorization()
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         locationManager.startUpdatingLocation()
 
         print("loaded map view")
@@ -45,8 +46,16 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
             mapView.setRegion(region, animated: false)
             isMapViewCentered = true
         }
-
         print(String(newLocation.coordinate.latitude) + " " + String(newLocation.coordinate.longitude))
+        messageManager.fetchMessage(userCoordinate: newLocation.coordinate, onComplete: {()in
+            for message in self.messageManager.messages{
+                let anno = MKPointAnnotation()
+                anno.coordinate = message.location.coordinate
+                self.mapView.addAnnotation(anno)
+            }
+        })
+        self.locationManager.stopUpdatingLocation()
+        
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {

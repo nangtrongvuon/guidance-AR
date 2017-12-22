@@ -35,9 +35,8 @@ extension MainViewController: UIPopoverPresentationControllerDelegate {
 
     @IBAction func showMapView (_ button: UIButton){
         let popMapView = MapViewController.instance()
+        popMapView.messageManager = self.messageManager
         var nav = UINavigationController()
-
-        showFetchedMessages()
 
         DispatchQueue.main.async { [unowned self] in
 
