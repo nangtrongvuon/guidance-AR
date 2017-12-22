@@ -15,7 +15,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
     var locationManager: CLLocationManager!
     var messageManager: MessageManager!
     var isMapViewCentered = false
-    let zoomSpan = MKCoordinateSpanMake(0.01, 0.01)
+    let zoomSpan = MKCoordinateSpanMake(0.0005, 0.0005)
 
     /*
     // Only override draw() if you perform custom drawing.
@@ -30,9 +30,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
         locationManager = CLLocationManager()
         locationManager.delegate = self
         locationManager.requestAlwaysAuthorization()
-        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.startUpdatingLocation()
 
+        mapView.showsUserLocation = true;
         print("loaded map view")
     }
 
@@ -47,15 +48,17 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
             isMapViewCentered = true
         }
         print(String(newLocation.coordinate.latitude) + " " + String(newLocation.coordinate.longitude))
-        messageManager.fetchMessage(userCoordinate: newLocation.coordinate, onComplete: {()in
+        messageManager.fetchMessage(range: 50, userCoordinate: newLocation.coordinate, onComplete: {()in
             for message in self.messageManager.messages{
                 let anno = MKPointAnnotation()
                 anno.coordinate = message.location.coordinate
+                anno.title = message.messageContent
+                
+                
                 self.mapView.addAnnotation(anno)
             }
         })
         self.locationManager.stopUpdatingLocation()
-        
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {

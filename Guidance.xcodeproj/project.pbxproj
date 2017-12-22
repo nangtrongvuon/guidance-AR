@@ -399,7 +399,7 @@
 				DEVELOPMENT_TEAM = Z689V2V2WX;
 				INFOPLIST_FILE = Guidance/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = hainguyen.Guidance;
+				PRODUCT_BUNDLE_IDENTIFIER = hainguyen;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
@@ -416,7 +416,7 @@
 				DEVELOPMENT_TEAM = Z689V2V2WX;
 				INFOPLIST_FILE = Guidance/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = hainguyen.Guidance;
+				PRODUCT_BUNDLE_IDENTIFIER = hainguyen;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
