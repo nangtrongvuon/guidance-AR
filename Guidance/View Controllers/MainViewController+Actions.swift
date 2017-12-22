@@ -11,25 +11,43 @@ import SceneKit
 
 extension MainViewController: UIPopoverPresentationControllerDelegate {
 
+    @IBAction func refreshView(_ button: UIButton) {
+
+        if !isFetchingMessage {
+            isFetchingMessage = true
+            DispatchQueue.main.async {
+                // Show progress indicator
+                self.spinner = UIActivityIndicatorView()
+                self.spinner!.center = self.refreshButton.center
+                self.spinner!.bounds.size = CGSize(width: self.refreshButton.bounds.width - 5, height: self.refreshButton.bounds.height - 5)
+                self.refreshButton.setImage(#imageLiteral(resourceName: "buttonring"), for: [])
+                self.sceneView.addSubview(self.spinner!)
+                self.spinner!.startAnimating()
+                self.messageManager.startFetchTimer(inView: self.sceneView)
+            }
+        } else {
+            isFetchingMessage = false
+            DispatchQueue.main.async {
+                // Remove progress indicator
+                self.spinner?.removeFromSuperview()
+                self.refreshButton.setImage(#imageLiteral(resourceName: "restart"), for: [])
+                self.messageManager.stopFetchTimer()
+            }
+        }
+    }
+
     @IBAction func addModeToggle(_ button: UIButton) {
         let addMessageView = AddMessageViewController.instance()
-        var nav = UINavigationController()
+        let nav = UINavigationController(rootViewController: addMessageView as UIViewController)
+        nav.modalPresentationStyle = .popover
+        addMessageView.delegate = self
 
-        DispatchQueue.main.async { [unowned self] in
-
-            nav = UINavigationController(rootViewController: addMessageView as UIViewController)
-            nav.modalPresentationStyle = .popover
-
-            addMessageView.delegate = self
-
-            if let popover = nav.popoverPresentationController {
-                popover.delegate = self
-                addMessageView.preferredContentSize = CGSize(width: self.view.frame.width, height: self.view.frame.height / 3)
-                popover.sourceView = self.addModeButton
-                popover.sourceRect = self.addModeButton.bounds
-                self.present(nav, animated: true, completion: nil)
-
-            }
+        if let popover = nav.popoverPresentationController {
+            popover.delegate = self
+            addMessageView.preferredContentSize = CGSize(width: self.view.frame.width, height: self.view.frame.height / 3)
+            popover.sourceView = self.addModeButton
+            popover.sourceRect = self.addModeButton.bounds
+            self.present(nav, animated: true, completion: nil)
         }
     }
 

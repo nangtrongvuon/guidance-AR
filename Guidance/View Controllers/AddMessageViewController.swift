@@ -9,7 +9,7 @@
 import UIKit
 
 protocol AddMessageViewControllerDelegate: class {
-    func enteredMessage(message: String)
+    func addMessageViewController(didFinishAddingMessage message: String)
 }
 
 class AddMessageViewController: UIViewController, UITextViewDelegate {
@@ -44,15 +44,16 @@ class AddMessageViewController: UIViewController, UITextViewDelegate {
     
     // Disable done button if text view is empty
     func textViewDidChange(_ textView: UITextView) {
-        
-        doneButton.isEnabled = !addMessageTextView.text.isEmpty
+
         self.navigationItem.title = String(describing: maximumWordCount - addMessageTextView.text.count)
+
+        doneButton.isEnabled = !addMessageTextView.text.isEmpty && addMessageTextView.text.count < maximumWordCount
     }
 
     // MARK: - Navigation
     @IBAction func addNewMessage(_ sender: UIBarButtonItem) {
         if let message = addMessageTextView.text {
-            delegate?.enteredMessage(message: message)
+            delegate?.addMessageViewController(didFinishAddingMessage: message)
             addMessageTextView.text = ""
             self.dismiss(animated: true, completion: nil)
         }

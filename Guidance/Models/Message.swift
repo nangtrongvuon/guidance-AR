@@ -44,13 +44,9 @@ class Message: LocationNode {
         print("created message at \(location), at \(location.altitude)")
     }
 
-
-
     func setupTextImage(message: String) -> [UIImage] {
 
         var results = [UIImage]()
-
-        DispatchQueue.main.sync { [unowned self] in 
             let messageView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
             let messageLabel = EdgeInsetLabel(frame: CGRect(origin: .zero, size: CGSize(width: 500.0, height: 500.0)))
 
@@ -79,10 +75,8 @@ class Message: LocationNode {
 
             results.append(textImage)
             results.append(backsideImage)
-        }
 
         return results
-
     }
 
     // Setups the message
@@ -91,32 +85,32 @@ class Message: LocationNode {
         self.messageFront.firstMaterial!.diffuse.contents = textImage
         self.messageFront.cornerRadius = 0.1
 
-        let backsideBackgroundBox = SCNPlane(width: textImage.size.width / 100, height: textImage.size.height / 100)
-        backsideBackgroundBox.firstMaterial!.diffuse.contents = backImage
-        backsideBackgroundBox.firstMaterial!.isDoubleSided = true
-        backsideBackgroundBox.cornerRadius = 0.1
+        let messageBack = SCNPlane(width: textImage.size.width / 100, height: textImage.size.height / 100)
+        messageBack.firstMaterial!.diffuse.contents = backImage
+        messageBack.firstMaterial!.isDoubleSided = true
+        messageBack.cornerRadius = 0.1
 
         let boxNode = SCNNode(geometry: self.messageFront)
-        let backsideNode = SCNNode(geometry: backsideBackgroundBox)
+        let backsideNode = SCNNode(geometry: messageBack)
 
         self.addChildNode(boxNode)
         self.addChildNode(backsideNode)
     }
 
     func create(message: String) {
-
-        let images = setupTextImage(message: message)
-
-        // Multithread on off queue
-        DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
-            self.setupMessageNode(textImage: images[0], backImage: images[1])
-        }
-
-        // Goes back to main queue
         DispatchQueue.main.async { [unowned self] in
-            self.messageContent = message
-        }
+            let images = self.setupTextImage(message: message)
 
+            // Multithread on off queue
+            DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
+                self.setupMessageNode(textImage: images[0], backImage: images[1])
+
+                // Goes back to main queue
+                DispatchQueue.main.async { [unowned self] in
+                    self.messageContent = message
+                }
+            }
+        }
     }
     
     func create(message: String, point: SCNVector3) {
@@ -124,7 +118,6 @@ class Message: LocationNode {
         self.position = point
         self.messageContent = message
     }
-
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
