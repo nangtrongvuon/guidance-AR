@@ -19,6 +19,7 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
 
     // MARK: Variables
     var messageManager: MessageManager!
+    var statusManager: StatusManager!
     var isAddingMessage: Bool = false
     var isFetchingMessage: Bool = false
     var showingBottomSheet: Bool = false
@@ -31,6 +32,8 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     @IBOutlet weak var addModeButton: UIButton!
     @IBOutlet weak var showMapButton: UIButton!
     @IBOutlet weak var refreshButton: UIButton!
+    @IBOutlet weak var messagePanel: UIVisualEffectView!
+    @IBOutlet weak var messageLabel: UILabel!
     var spinner: UIActivityIndicatorView?
     
     override func viewDidLoad() {
@@ -66,7 +69,7 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         bottomSheetInstance = BottomSheetViewController.instance()
         bottomSheetInstance.delegate = self
 
-        setupBottomSheet()
+        setupUIElements()
 
         // Create a session configuration
         let configuration = ARWorldTrackingConfiguration()
@@ -117,7 +120,7 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         print("bottom sheet is not showing")
     }
 
-    func setupBottomSheet() {
+    func setupUIElements() {
 
         self.addChildViewController(bottomSheetInstance)
         self.view.addSubview(bottomSheetInstance.view)
@@ -127,6 +130,15 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         let width = view.frame.width
 
         bottomSheetInstance.view.frame = CGRect(x: 0, y: self.view.frame.maxY, width: width, height: height / 2)
+
+        statusManager = StatusManager(viewController: self)
+
+        // Set appearance of message output panel
+        messagePanel.layer.cornerRadius = 3.0
+        messagePanel.clipsToBounds = true
+        messagePanel.isHidden = true
+        messageLabel.text = ""
+
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -146,6 +158,7 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
             }
         } else {
             // Adding a new message
+            statusManager.showMessage("Tap anywhere on the screen to add a new message.", autoHide: true)
             messageManager.reactToTouchesBegan(touches, with: currentMessage, with: event, in: sceneView)
             isAddingMessage = false
         }
@@ -157,31 +170,61 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         isAddingMessage = false
         isFetchingMessage = true
 
+        statusManager.showMessage("Now fetching for messages.", autoHide: true)
         // Fetch messages in background
         self.messageManager.fetchMessage(userCoordinate: currentUserCoordinates, onComplete: { [unowned self] in
             self.isFetchingMessage = false
             print("finished fetching")
 
+            self.statusManager.showMessage("Found \(self.messageManager.messages.count) messages.", autoHide: true)
             self.messageManager.displayFetchedMessages(inView: self.sceneView)
         })
     }
 
-    
-    func session(_ session: ARSession, didFailWithError error: Error) {
-        // Present an error message to the user
+    func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
+        statusManager.showTrackingQualityInfo(for: camera.trackingState, autoHide: true)
 
+        switch camera.trackingState {
+        case .notAvailable:
+            fallthrough
+        case .limited:
+            statusManager.escalateFeedback(for: camera.trackingState, inSeconds: 3.0)
+        case .normal:
+            statusManager.cancelScheduledMessage(forType: .trackingState)
+        }
+    }
+
+    func session(_ session: ARSession, didFailWithError error: Error) {
+        guard let arError = error as? ARError else { return }
+
+        let nsError = error as NSError
+        var sessionErrorMsg = "\(nsError.localizedDescription) \(nsError.localizedFailureReason ?? "")"
+        if let recoveryOptions = nsError.localizedRecoveryOptions {
+            for option in recoveryOptions {
+                sessionErrorMsg.append("\(option).")
+            }
+        }
+
+        let isRecoverable = (arError.code == .worldTrackingFailed)
+        if isRecoverable {
+            sessionErrorMsg += "\nYou can try resetting the session or quit the application."
+        } else {
+            sessionErrorMsg += "\nThis is an unrecoverable error that requires to quit the application."
+        }
+
+        statusManager.showMessage(sessionErrorMsg)
     }
 
     func sessionWasInterrupted(_ session: ARSession) {
-        // Inform the user that the session has been interrupted, for example, by presenting an overlay
-
+        statusManager.blurBackground()
+        statusManager.showMessage("SESSION HAS BEEN INTERRUPTED AND WILL RESUME")
     }
 
     func sessionInterruptionEnded(_ session: ARSession) {
-        // Reset tracking and/or remove existing anchors if consistent tracking is required
-        // Create a session configuration
+        statusManager.unblurBackground()
         let configuration = ARWorldTrackingConfiguration()
-        session.run(configuration, options: [.removeExistingAnchors, .resetTracking])
+        session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+        statusManager.showMessage("RESETTING SESSION")
     }
 
     // needed for modal

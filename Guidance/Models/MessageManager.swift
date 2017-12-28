@@ -26,7 +26,7 @@ class MessageManager {
         
     }
 
-    private var messages = [Message]()
+    var messages = [Message]()
     let locationManager = LocationManager()
 
     var lastPlacedMessage: Message?
@@ -134,10 +134,17 @@ class MessageManager {
                 message.position = objectPoint
                 sceneView.scene.rootNode.addChildNode(message)
 
-                // Make message face camera
-                if let currentCameraOrientation = sceneView.pointOfView?.orientation {
-                    message.orientation = currentCameraOrientation
-                }
+            }
+        }
+
+        turnMessagesToUser(inView: sceneView)
+    }
+
+    func turnMessagesToUser(inView sceneView: ARSCNView) {
+        for message in messages {
+            // Make message face camera
+            if let currentCameraOrientation = sceneView.pointOfView?.orientation {
+                message.orientation = currentCameraOrientation
             }
         }
     }

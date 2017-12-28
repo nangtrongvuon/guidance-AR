@@ -17,6 +17,7 @@
 		E14E48791FA5B96600539ED6 /* AddMessageViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E14E48781FA5B96600539ED6 /* AddMessageViewController.storyboard */; };
 		E151EFFC1FCD391E004D75D5 /* BottomSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E151EFFB1FCD391E004D75D5 /* BottomSheetViewController.swift */; };
 		E151F0011FCD39CC004D75D5 /* BottomSheetViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E151F0001FCD39CC004D75D5 /* BottomSheetViewController.storyboard */; };
+		E1DFDD041FF516CA00C80BBB /* StatusManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DFDD031FF516CA00C80BBB /* StatusManager.swift */; };
 		E1F09B941FB2F706009C9651 /* SceneLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F09B8A1FB2F705009C9651 /* SceneLocationView.swift */; };
 		E1F09B951FB2F706009C9651 /* SceneLocationEstimate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F09B8B1FB2F705009C9651 /* SceneLocationEstimate.swift */; };
 		E1F09B961FB2F706009C9651 /* SCNNode+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F09B8C1FB2F705009C9651 /* SCNNode+Extensions.swift */; };
@@ -47,6 +48,7 @@
 		E14E48781FA5B96600539ED6 /* AddMessageViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AddMessageViewController.storyboard; sourceTree = "<group>"; };
 		E151EFFB1FCD391E004D75D5 /* BottomSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetViewController.swift; sourceTree = "<group>"; };
 		E151F0001FCD39CC004D75D5 /* BottomSheetViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = BottomSheetViewController.storyboard; sourceTree = "<group>"; };
+		E1DFDD031FF516CA00C80BBB /* StatusManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusManager.swift; sourceTree = "<group>"; };
 		E1F09B8A1FB2F705009C9651 /* SceneLocationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneLocationView.swift; sourceTree = "<group>"; };
 		E1F09B8B1FB2F705009C9651 /* SceneLocationEstimate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneLocationEstimate.swift; sourceTree = "<group>"; };
 		E1F09B8C1FB2F705009C9651 /* SCNNode+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SCNNode+Extensions.swift"; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 			children = (
 				E10B71271FA6E0950013CFD9 /* Message.swift */,
 				E10B71251FA6E0580013CFD9 /* MessageManager.swift */,
+				E1DFDD031FF516CA00C80BBB /* StatusManager.swift */,
 				E1FE73031FA44D0000A61E74 /* SCNVector3Extensions.swift */,
 				275318EC1FD8506400ADEF5E /* HttpHandler.swift */,
 			);
@@ -251,6 +254,7 @@
 				E1F09B951FB2F706009C9651 /* SceneLocationEstimate.swift in Sources */,
 				275318ED1FD8506400ADEF5E /* HttpHandler.swift in Sources */,
 				E1F09B981FB2F706009C9651 /* SceneLocationEstimate+Extensions.swift in Sources */,
+				E1DFDD041FF516CA00C80BBB /* StatusManager.swift in Sources */,
 				E1FE72EE1FA4442100A61E74 /* AppDelegate.swift in Sources */,
 				E1F09B961FB2F706009C9651 /* SCNNode+Extensions.swift in Sources */,
 				27349F7E1FC7124400EA1122 /* MapViewController.swift in Sources */,
