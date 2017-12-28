@@ -27,6 +27,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        mapView.delegate = self
         locationManager = CLLocationManager()
         locationManager.delegate = self
         locationManager.requestAlwaysAuthorization()
@@ -38,7 +39,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-
         let newLocation = MKPointAnnotation()
         newLocation.coordinate = locations[0].coordinate
         if (!isMapViewCentered){
@@ -48,12 +48,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
             isMapViewCentered = true
         }
         print(String(newLocation.coordinate.latitude) + " " + String(newLocation.coordinate.longitude))
-        messageManager.fetchMessage(range: 50, userCoordinate: newLocation.coordinate, onComplete: {()in
+        messageManager.fetchMessage(range: 50, userCoordinate: newLocation.coordinate, onComplete: {() in
             for message in self.messageManager.messages{
                 let anno = MKPointAnnotation()
                 anno.coordinate = message.location.coordinate
+                if(message.messageContent!.count == 0) {message.messageContent = "something"}
                 anno.title = message.messageContent
-                
                 
                 self.mapView.addAnnotation(anno)
             }
@@ -69,6 +69,27 @@ class MapViewController: UIViewController, CLLocationManagerDelegate {
             preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "Got it", style: UIAlertActionStyle.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
+    }
+}
+extension MapViewController: MKMapViewDelegate{
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        if annotation is MKUserLocation {return nil}
+        let identifier = "marker"
+        var view: MKMarkerAnnotationView
+        if let dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView {
+            dequeuedView.annotation = annotation
+            view = dequeuedView
+            print("aaaaaaaa")
+        } else {
+            view = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            view.animatesWhenAdded = true
+            view.canShowCallout = true
+            view.calloutOffset = CGPoint(x: 0, y:0)
+            view.rightCalloutAccessoryView = UIButton(type: .custom)
+            view.leftCalloutAccessoryView = UIButton(type: .custom)
+            print("bbbbbbbbb")
+        }
+        return view
     }
 }
 
