@@ -11,7 +11,7 @@ import SceneKit
 import ARKit
 import CoreLocation
 
-class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AddMessageViewControllerDelegate, BottomSheetViewControllerDelegate {
+class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, AddMessageViewControllerDelegate, BottomSheetViewControllerDelegate, MessageManagerDelegate {
 
 
     // MARK: Queues
@@ -43,13 +43,13 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
 
         // Set the view's delegate
         sceneView.delegate = self
-
         sceneView.frame = view.bounds
         
         // Show statistics such as fps and timing information
-        sceneView.showsStatistics = true
+        sceneView.showsStatistics = false
 
         messageManager = MessageManager(updateQueue: serialQueue)
+        messageManager.delegate = self
         // Create a new scene
         let scene = SCNScene()
         
@@ -93,6 +93,7 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     func addMessageViewController(didFinishAddingMessage message: String) {
         currentMessage = message
         isAddingMessage = true
+        statusManager.showMessage("Tap anywhere on the screen to add a new message.", autoHide: true)
     }
 
     func message(at point: CGPoint) -> Message? {
@@ -158,28 +159,30 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
             }
         } else {
             // Adding a new message
-            statusManager.showMessage("Tap anywhere on the screen to add a new message.", autoHide: true)
             messageManager.reactToTouchesBegan(touches, with: currentMessage, with: event, in: sceneView)
             isAddingMessage = false
         }
     }
 
-    func initiateMessageFetch() {
-        guard let currentUserCoordinates = sceneView.locationManager.currentLocation?.coordinate else { print("couldn't get coordinates"); return }
-
-        isAddingMessage = false
-        isFetchingMessage = true
-
-        statusManager.showMessage("Now fetching for messages.", autoHide: true)
-        // Fetch messages in background
-        self.messageManager.fetchMessage(range: 25, userCoordinate: currentUserCoordinates, onComplete: { [unowned self] in
-            self.isFetchingMessage = false
-            print("finished fetching")
-
-            self.statusManager.showMessage("Found \(self.messageManager.messages.count) messages.", autoHide: true)
-            self.messageManager.displayFetchedMessages(inView: self.sceneView)
-        })
+    func messageManager(_ manager: MessageManager, didFinishFetchingMessages messages: [Message]) {
+        statusManager.showMessage("Fetched \(messages.count) messages.", autoHide: true)
     }
+
+//    func initiateMessageFetch() {
+//        guard let currentUserCoordinates = sceneView.locationManager.currentLocation?.coordinate else { print("couldn't get coordinates"); return }
+//
+//        isAddingMessage = false
+//        isFetchingMessage = true
+//
+//        // Fetch messages in background
+//        self.messageManager.fetchMessage(range: 25, userCoordinate: currentUserCoordinates, onComplete: { [unowned self] in
+//            self.isFetchingMessage = false
+//            print("finished fetching")
+//
+//            self.statusManager.showMessage("Found \(self.messageManager.messages.count) messages.", autoHide: true)
+//            self.messageManager.displayFetchedMessages(inView: self.sceneView)
+//        })
+//    }
 
     func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
         statusManager.showTrackingQualityInfo(for: camera.trackingState, autoHide: true)

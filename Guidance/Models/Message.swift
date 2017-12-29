@@ -104,11 +104,8 @@ class Message: LocationNode {
             // Multithread on off queue
             DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
                 self.setupMessageNode(textImage: images[0], backImage: images[1])
+                self.messageContent = message
 
-                // Goes back to main queue
-                DispatchQueue.main.async { [unowned self] in
-                    self.messageContent = message
-                }
             }
         }
     }

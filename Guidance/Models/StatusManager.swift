@@ -53,7 +53,6 @@ class StatusManager {
         self.viewController = viewController
     }
 
-
     // Timer for hiding messages
     private var messageHideTimer: Timer?
 
@@ -77,6 +76,8 @@ class StatusManager {
 
             // make sure status is showing
             self.showHideMessage(hide: false, animated: true)
+
+            print("showing a message")
 
             if autoHide {
                 let charCount = text.count

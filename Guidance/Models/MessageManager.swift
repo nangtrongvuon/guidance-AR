@@ -12,7 +12,7 @@ import ARKit
 import SceneKit
 
 protocol MessageManagerDelegate: class {
-    func messageManager(_ manager: MessageManager, didFinishFetchingMessages: [Message])
+    func messageManager(_ manager: MessageManager, didFinishFetchingMessages messages: [Message])
 }
 
 class MessageManager {
@@ -31,6 +31,8 @@ class MessageManager {
 
     var lastPlacedMessage: Message?
     var fetchTimer: Timer?
+
+    weak var delegate: MessageManagerDelegate?
 
     var updateQueue: DispatchQueue
 
@@ -93,7 +95,6 @@ class MessageManager {
         }
     }
 
-
     func startFetchTimer(inView sceneView: ARSCNView) {
         fetchTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { _ in
             if let currentLocation = self.locationManager.currentLocation {
@@ -107,6 +108,8 @@ class MessageManager {
     }
 
     func displayFetchedMessages(inView sceneView: ARSCNView) {
+
+        delegate?.messageManager(self, didFinishFetchingMessages: messages)
 
         for message in self.messages {
             // Skips messages that were already placed
@@ -128,12 +131,12 @@ class MessageManager {
                     /* Converting 4x4 matrix into x,y,z point */
                     testResult.worldTransform.columns.3.x * Float.random(min: -10, max: 10),
                     testResult.worldTransform.columns.3.y * Float.random(min: Float(-message.location.altitude), max: Float(message.location.altitude)),
-                    testResult.worldTransform.columns.3.z * Float.random(min: 2, max: 4)
+//                    testResult.worldTransform.columns.3.z * Float.random(min: 5, max: 8)
+                    Float.random(min: -5, max: -8)
                 )
 
                 message.position = objectPoint
                 sceneView.scene.rootNode.addChildNode(message)
-
             }
         }
 

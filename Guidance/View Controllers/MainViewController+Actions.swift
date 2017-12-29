@@ -13,6 +13,7 @@ extension MainViewController: UIPopoverPresentationControllerDelegate {
 
     @IBAction func refreshView(_ button: UIButton) {
 
+        statusManager.showMessage("Now fetching for messages.", autoHide: true)
         if !isFetchingMessage {
             isFetchingMessage = true
             DispatchQueue.main.async {
@@ -26,6 +27,7 @@ extension MainViewController: UIPopoverPresentationControllerDelegate {
                 self.messageManager.startFetchTimer(inView: self.sceneView)
             }
         } else {
+            statusManager.showMessage("Stopped fetching messages.", autoHide: true)
             isFetchingMessage = false
             DispatchQueue.main.async {
                 // Remove progress indicator
@@ -54,6 +56,7 @@ extension MainViewController: UIPopoverPresentationControllerDelegate {
     @IBAction func showMapView (_ button: UIButton){
         let popMapView = MapViewController.instance()
         popMapView.messageManager = self.messageManager
+        statusManager.showMessage("Now fetching for messages on the map.", autoHide: true)
         var nav = UINavigationController()
 
         DispatchQueue.main.async { [unowned self] in
