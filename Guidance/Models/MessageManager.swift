@@ -97,7 +97,7 @@ class MessageManager {
     func startFetchTimer(inView sceneView: ARSCNView) {
         fetchTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { _ in
             if let currentLocation = self.locationManager.currentLocation {
-                self.fetchMessage(userCoordinate: currentLocation.coordinate, onComplete: { self.displayFetchedMessages(inView: sceneView) })
+                self.fetchMessage(range: 25, userCoordinate: currentLocation.coordinate, onComplete: { self.displayFetchedMessages(inView: sceneView) })
             }
         }
     }
@@ -229,7 +229,7 @@ class MessageManager {
      - parameter failure: on failure callback
      - Returns: Void
      */
-    func fetchMessage(userCoordinate: CLLocationCoordinate2D, onComplete:@escaping () -> Void) {
+    func fetchMessage(range: Int, userCoordinate: CLLocationCoordinate2D, onComplete:@escaping () -> Void) {
 
         guard let currentLocation = locationManager.currentLocation else { return }
 
@@ -241,7 +241,7 @@ class MessageManager {
 
         fetchingPrams["lat"] = "\(currentLocation.coordinate.latitude)"
         fetchingPrams["lon"] = "\(currentLocation.coordinate.longitude)"
-        fetchingPrams["range"] = "25"
+        fetchingPrams["range"] = String(range)
         //        fetchingPrams["altitude"] = "\(currentLocation.altitude)"
 
         HttpHandler().makeAPICall(

@@ -57,7 +57,7 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         sceneView.scene = scene
 
         guard let currentUserCoordinates = sceneView.locationManager.currentLocation?.coordinate else { print("couldn't get coordinates"); return }
-        messageManager.fetchMessage(userCoordinate: currentUserCoordinates, onComplete: {
+        messageManager.fetchMessage(range: 25, userCoordinate: currentUserCoordinates, onComplete: {
             print("initial fetch complete")
         })
         
@@ -172,7 +172,7 @@ class MainViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
 
         statusManager.showMessage("Now fetching for messages.", autoHide: true)
         // Fetch messages in background
-        self.messageManager.fetchMessage(userCoordinate: currentUserCoordinates, onComplete: { [unowned self] in
+        self.messageManager.fetchMessage(range: 25, userCoordinate: currentUserCoordinates, onComplete: { [unowned self] in
             self.isFetchingMessage = false
             print("finished fetching")
 

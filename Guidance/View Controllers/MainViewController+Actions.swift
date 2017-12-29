@@ -53,16 +53,22 @@ extension MainViewController: UIPopoverPresentationControllerDelegate {
 
     @IBAction func showMapView (_ button: UIButton){
         let popMapView = MapViewController.instance()
-        let nav = UINavigationController(rootViewController: popMapView as UIViewController)
-        nav.isNavigationBarHidden = true
-        nav.modalPresentationStyle = .popover
+        popMapView.messageManager = self.messageManager
+        var nav = UINavigationController()
 
-        if let popover = nav.popoverPresentationController {
-            popover.delegate = self
-            popMapView.preferredContentSize = CGSize(width: self.view.frame.width, height: self.view.frame.height)
-            popover.sourceView = self.showMapButton
-            popover.sourceRect = self.showMapButton.bounds
-            self.present(nav, animated: true, completion: nil)
+        DispatchQueue.main.async { [unowned self] in
+
+            nav = UINavigationController(rootViewController: popMapView as UIViewController)
+            nav.isNavigationBarHidden = true
+
+            nav.modalPresentationStyle = .popover
+            if let popover = nav.popoverPresentationController {
+                popover.delegate = self
+                popMapView.preferredContentSize = CGSize(width: self.view.frame.width, height: self.view.frame.height)
+                popover.sourceView = self.showMapButton
+                popover.sourceRect = self.showMapButton.bounds
+                self.present(nav, animated: true, completion: nil)
+            }
         }
     }
 }
